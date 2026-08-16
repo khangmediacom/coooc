@@ -301,7 +301,8 @@ fun GameScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFFFFFFFF).copy(alpha = 0.85f))
+                            .background(Color(0x77000000))
+                            .border(1.dp, Color(0x33D4AF37), RoundedCornerShape(8.dp))
                             .padding(vertical = 4.dp, horizontal = 6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -309,7 +310,7 @@ fun GameScreen(
                             text = modeLabel,
                             fontSize = 11.5.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B),
+                            color = Color(0xFFF8FAFC),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -318,7 +319,7 @@ fun GameScreen(
                             text = if (isMyTurn) AppStrings.get(language, "your_turn") else if (isAiThinking) AppStrings.get(language, "ai_thinking") else AppStrings.get(language, "opponent_turn"),
                             fontSize = 10.5.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = if (isMyTurn) Color(0xFF16A34A) else Color(0xFF64748B)
+                            color = if (isMyTurn) Color(0xFF22C55E) else Color(0xFF94A3B8)
                         )
                     }
 
@@ -553,7 +554,10 @@ private fun ZingPlayPlayerBanner(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 2.dp),
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color(0x77000000))
+            .border(1.dp, if (isCurrentTurn) AngkorGold else Color(0x33D4AF37), RoundedCornerShape(10.dp))
+            .padding(horizontal = 8.dp, vertical = 3.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -561,19 +565,19 @@ private fun ZingPlayPlayerBanner(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
+                    .size(36.dp)
                     .clip(CircleShape)
                     .background(
                         if (isWhite) Brush.linearGradient(listOf(Color(0xFFFFFBEB), Color(0xFFE2C474)))
                         else Brush.linearGradient(listOf(Color(0xFF991B1B), Color(0xFF450A0A)))
                     )
-                    .border(2.dp, if (isCurrentTurn) AngkorGold else Color(0xFFD4AF37).copy(alpha = 0.5f), CircleShape)
-                    .shadow(if (isCurrentTurn) 4.dp else 0.dp, CircleShape),
+                    .border(2.dp, if (isCurrentTurn) AngkorGold else Color(0xFFD4AF37).copy(alpha = 0.6f), CircleShape)
+                    .shadow(if (isCurrentTurn) 6.dp else 0.dp, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (isWhite) "♔" else "♚",
-                    fontSize = 19.sp,
+                    fontSize = 18.sp,
                     color = if (isWhite) Color(0xFF1E293B) else Color(0xFFFFFFFF)
                 )
             }
@@ -586,24 +590,24 @@ private fun ZingPlayPlayerBanner(
                         text = name,
                         fontSize = 13.5.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = Color(0xFFF8FAFC),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     if (isThinking) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "AI Thinking...",
+                            text = "Thinking...",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFD97706)
+                            color = Color(0xFFFBBF24)
                         )
                     }
                 }
                 Text(
                     text = title,
                     fontSize = 11.sp,
-                    color = Color(0xFF64748B)
+                    color = Color(0xFFCBD5E1)
                 )
             }
         }
@@ -620,7 +624,7 @@ private fun ZingPlayPlayerBanner(
                             modifier = Modifier
                                 .size(18.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFFFAF5EC))
+                                .background(Color(0xFF26201B))
                                 .border(0.5.dp, Color(0xFFD4AF37), CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
@@ -629,6 +633,7 @@ private fun ZingPlayPlayerBanner(
                                     PieceColor.WHITE -> "♙"
                                     PieceColor.BLACK -> "♟"
                                 },
+                                color = if (p.color == PieceColor.WHITE) Color(0xFFF8FAFC) else Color(0xFFEF4444),
                                 fontSize = 11.sp
                             )
                         }
@@ -640,10 +645,10 @@ private fun ZingPlayPlayerBanner(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(if (isCurrentTurn) Color(0xFFFEF3C7) else Color(0xFFF1F5F9))
+                    .background(if (isCurrentTurn) Color(0xFFD97706) else Color(0x66000000))
                     .border(
                         1.dp,
-                        if (isCurrentTurn) Color(0xFFD97706) else Color(0xFFCBD5E1),
+                        if (isCurrentTurn) AngkorGold else Color(0x44CBD5E1),
                         RoundedCornerShape(8.dp)
                     )
                     .padding(horizontal = 8.dp, vertical = 3.dp)
@@ -652,7 +657,7 @@ private fun ZingPlayPlayerBanner(
                     text = "⏱ $timeFormatted",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (isCurrentTurn) Color(0xFF92400E) else Color(0xFF475569)
+                    color = if (isCurrentTurn) Color(0xFFFFFFFF) else Color(0xFFE2E8F0)
                 )
             }
         }
@@ -683,12 +688,12 @@ private fun CompactPlayerCard(
             .fillMaxWidth()
             .border(
                 1.5.dp,
-                if (isCurrentTurn) AngkorGold else Color(0xFFE8DCB8),
+                if (isCurrentTurn) AngkorGold else Color(0x44D4AF37),
                 RoundedCornerShape(12.dp)
             ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isCurrentTurn) Color(0xFFFFFBEB) else Color(0xFFFFFFFF)
+            containerColor = if (isCurrentTurn) Color(0xAA1E1A17) else Color(0x77000000)
         )
     ) {
         Column(
@@ -721,14 +726,14 @@ private fun CompactPlayerCard(
                 text = name,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = Color(0xFFF8FAFC),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = title,
                 fontSize = 10.sp,
-                color = Color(0xFF64748B)
+                color = Color(0xFFCBD5E1)
             )
 
             if (isThinking) {
@@ -736,7 +741,7 @@ private fun CompactPlayerCard(
                     text = "Thinking...",
                     fontSize = 9.5.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFD97706)
+                    color = Color(0xFFFBBF24)
                 )
             }
 
@@ -746,14 +751,14 @@ private fun CompactPlayerCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .background(if (isCurrentTurn) Color(0xFFFEF3C7) else Color(0xFFF1F5F9))
+                    .background(if (isCurrentTurn) Color(0xFFD97706) else Color(0x66000000))
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
                     text = timeFormatted,
                     fontSize = 11.5.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (isCurrentTurn) Color(0xFF92400E) else Color(0xFF475569)
+                    color = if (isCurrentTurn) Color(0xFFFFFFFF) else Color(0xFFE2E8F0)
                 )
             }
         }
@@ -787,14 +792,14 @@ private fun GameHeaderBar(
             modifier = Modifier
                 .size(34.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color(0xFFFFFFFF))
-                .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(10.dp))
+                .background(Color(0x66000000))
+                .border(1.dp, Color(0x44D4AF37), RoundedCornerShape(10.dp))
                 .testTag("game_back_home_btn")
         ) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint = Color(0xFF1E293B),
+                tint = Color(0xFFF8FAFC),
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -805,7 +810,7 @@ private fun GameHeaderBar(
                 text = modeLabel,
                 fontSize = 12.5.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = Color(0xFFF8FAFC)
             )
 
             if (boardState.inCheck) {
@@ -813,7 +818,7 @@ private fun GameHeaderBar(
                     text = "⚠ " + AppStrings.get(language, "check"),
                     fontWeight = FontWeight.Black,
                     fontSize = 10.5.sp,
-                    color = Color(0xFFDC2626)
+                    color = Color(0xFFEF4444)
                 )
             } else {
                 val isMyTurn = boardState.currentTurn == playerColor
@@ -821,7 +826,7 @@ private fun GameHeaderBar(
                     text = if (isMyTurn) AppStrings.get(language, "your_turn") else if (isAiThinking) AppStrings.get(language, "ai_thinking") else AppStrings.get(language, "opponent_turn"),
                     fontSize = 10.5.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (isMyTurn) Color(0xFF16A34A) else Color(0xFF64748B)
+                    color = if (isMyTurn) Color(0xFF22C55E) else Color(0xFF94A3B8)
                 )
             }
         }
@@ -835,21 +840,21 @@ private fun GameHeaderBar(
                 icon = Icons.Default.Palette,
                 desc = "Theme",
                 tag = "theme_settings_btn",
-                tint = Color(0xFFD97706),
+                tint = Color(0xFFFBBF24),
                 onClick = onOpenTheme
             )
             SmallHeaderIconButton(
                 icon = if (preferences.musicEnabled || preferences.soundEnabled) Icons.Default.MusicNote else Icons.Default.MusicOff,
                 desc = "Audio",
                 tag = "audio_settings_btn",
-                tint = if (preferences.musicEnabled || preferences.soundEnabled) JadeEmerald else Color(0xFF94A3B8),
+                tint = if (preferences.musicEnabled || preferences.soundEnabled) Color(0xFF34D399) else Color(0xFF94A3B8),
                 onClick = onOpenAudio
             )
             SmallHeaderIconButton(
                 icon = Icons.Default.Refresh,
                 desc = "Flip",
                 tag = "flip_board_btn",
-                tint = Color(0xFFD97706),
+                tint = Color(0xFFFBBF24),
                 onClick = onFlipBoard
             )
         }
@@ -869,8 +874,8 @@ private fun SmallHeaderIconButton(
         modifier = Modifier
             .size(34.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFFFFFFFF))
-            .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(10.dp))
+            .background(Color(0x66000000))
+            .border(1.dp, Color(0x44D4AF37), RoundedCornerShape(10.dp))
             .testTag(tag)
     ) {
         Icon(
@@ -953,8 +958,8 @@ private fun PortraitCircularActionToolbar(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFFFFFFF).copy(alpha = 0.95f))
-            .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(12.dp))
+            .background(Color(0x88000000))
+            .border(1.dp, Color(0x33D4AF37), RoundedCornerShape(12.dp))
             .padding(horizontal = 4.dp, vertical = 3.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
@@ -962,7 +967,7 @@ private fun PortraitCircularActionToolbar(
         CircularActionButton(
             icon = Icons.Default.Undo,
             label = AppStrings.get(language, "undo"),
-            color = Color(0xFF475569),
+            color = Color(0xFFCBD5E1),
             enabled = boardState.moveHistory.isNotEmpty() && !isAiThinking,
             tag = "undo_move_btn",
             onClick = onUndo
@@ -971,7 +976,7 @@ private fun PortraitCircularActionToolbar(
         CircularActionButton(
             icon = Icons.Default.Lightbulb,
             label = AppStrings.get(language, "hint"),
-            color = Color(0xFFD97706),
+            color = Color(0xFFFBBF24),
             enabled = !isAiThinking && !isGameOver,
             tag = "hint_btn",
             onClick = onHint
@@ -980,7 +985,7 @@ private fun PortraitCircularActionToolbar(
         CircularActionButton(
             icon = Icons.Default.Chat,
             label = AppStrings.get(language, "chat"),
-            color = Color(0xFF0284C7),
+            color = Color(0xFF38BDF8),
             enabled = !isGameOver,
             tag = "chat_btn",
             onClick = onOpenChat
@@ -989,7 +994,7 @@ private fun PortraitCircularActionToolbar(
         CircularActionButton(
             icon = Icons.Default.Handshake,
             label = AppStrings.get(language, "draw_offer"),
-            color = Color(0xFF059669),
+            color = Color(0xFF34D399),
             enabled = !isGameOver,
             tag = "draw_offer_btn",
             onClick = onDrawOffer
@@ -998,7 +1003,7 @@ private fun PortraitCircularActionToolbar(
         CircularActionButton(
             icon = Icons.Default.Flag,
             label = AppStrings.get(language, "resign"),
-            color = Color(0xFFDC2626),
+            color = Color(0xFFF87171),
             enabled = !isGameOver,
             tag = "resign_btn",
             onClick = onResign
@@ -1023,8 +1028,8 @@ private fun LandscapeActionButtons(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFFFFFFFF))
-            .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(10.dp))
+            .background(Color(0x88000000))
+            .border(1.dp, Color(0x33D4AF37), RoundedCornerShape(10.dp))
             .padding(horizontal = 2.dp, vertical = 3.dp),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
@@ -1032,7 +1037,7 @@ private fun LandscapeActionButtons(
         CircularActionButton(
             icon = Icons.Default.Undo,
             label = AppStrings.get(language, "undo"),
-            color = Color(0xFF475569),
+            color = Color(0xFFCBD5E1),
             enabled = boardState.moveHistory.isNotEmpty() && !isAiThinking,
             tag = "undo_move_btn",
             onClick = onUndo
@@ -1040,7 +1045,7 @@ private fun LandscapeActionButtons(
         CircularActionButton(
             icon = Icons.Default.Lightbulb,
             label = AppStrings.get(language, "hint"),
-            color = Color(0xFFD97706),
+            color = Color(0xFFFBBF24),
             enabled = !isAiThinking && !isGameOver,
             tag = "hint_btn",
             onClick = onHint
@@ -1048,7 +1053,7 @@ private fun LandscapeActionButtons(
         CircularActionButton(
             icon = Icons.Default.Chat,
             label = AppStrings.get(language, "chat"),
-            color = Color(0xFF0284C7),
+            color = Color(0xFF38BDF8),
             enabled = !isGameOver,
             tag = "chat_btn",
             onClick = onOpenChat
@@ -1056,7 +1061,7 @@ private fun LandscapeActionButtons(
         CircularActionButton(
             icon = Icons.Default.Flag,
             label = AppStrings.get(language, "resign"),
-            color = Color(0xFFDC2626),
+            color = Color(0xFFF87171),
             enabled = !isGameOver,
             tag = "resign_btn",
             onClick = onResign
@@ -1084,14 +1089,14 @@ fun CircularActionButton(
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = if (enabled) color else Color(0xFFCBD5E1),
+            tint = if (enabled) color else Color(0xFF64748B),
             modifier = Modifier.size(19.dp)
         )
         Text(
             text = label,
             fontSize = 10.sp,
             fontWeight = FontWeight.SemiBold,
-            color = if (enabled) Color(0xFF334155) else Color(0xFF94A3B8)
+            color = if (enabled) Color(0xFFF1F5F9) else Color(0xFF64748B)
         )
     }
 }

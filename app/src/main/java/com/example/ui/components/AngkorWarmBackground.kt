@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -15,12 +14,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 
 /**
- * Luminous Angkor Wat & Bayon Serene Faces Background with subtle soft opacity (mờ nhẹ).
+ * Luxury ZingPlay-style Dark Textured Gaming Table Background with Warm Golden Ambient Glow.
  * Features:
- * 1. Warm ivory-to-sandstone daylight vertical gradient canvas.
- * 2. Golden radiant morning aura in the upper-mid region.
- * 3. Ancient Angkor Wat towers in soft atmospheric mist.
- * 4. Serene Bayon smiling stone face monument and delicate Khmer flame/lotus filigrees at low opacity (10-18%).
+ * 1. Deep rich dark charcoal/espresso textured woven mat gradient (just like the ZingPlay game room).
+ * 2. Warm amber-gold radial spotlight centered on the board area for maximum depth and contrast.
+ * 3. Subtle fine woven texture grid overlay.
+ * 4. Elegant Angkor & Bayon golden silhouettes and Khmer lotus filigrees at corner edges.
  */
 @Composable
 fun AngkorWarmBackground(
@@ -29,9 +28,9 @@ fun AngkorWarmBackground(
 ) {
     val bgGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFFFFDF7), // Pure radiant warm ivory
-            Color(0xFFF8F3E6), // Soft sandstone cream
-            Color(0xFFEFE4CC), // Warm golden amber lotus moat
+            Color(0xFF26201B), // Dark espresso / charcoal gaming linen top
+            Color(0xFF1C1714), // Deep warm charcoal center
+            Color(0xFF14110E), // Luxury dark ebony wood base
         )
     )
 
@@ -44,33 +43,56 @@ fun AngkorWarmBackground(
             val w = size.width
             val h = size.height
 
-            // 1. Radiant Morning Sun Aura behind Angkor Wat
+            // 1. Warm Golden Spotlight centered on the playing field (illuminates the chessboard)
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        Color(0xFFFFDF80).copy(alpha = 0.30f),
-                        Color(0xFFFFD54F).copy(alpha = 0.14f),
-                        Color(0xFFFFF8E1).copy(alpha = 0.04f),
+                        Color(0xFFD4AF37).copy(alpha = 0.18f),
+                        Color(0xFFB45309).copy(alpha = 0.08f),
+                        Color(0xFF78350F).copy(alpha = 0.03f),
                         Color.Transparent
                     ),
-                    center = Offset(w * 0.5f, h * 0.45f),
-                    radius = w * 0.70f
+                    center = Offset(w * 0.5f, h * 0.50f),
+                    radius = w * 0.75f
                 ),
-                radius = w * 0.70f,
-                center = Offset(w * 0.5f, h * 0.45f)
+                radius = w * 0.75f,
+                center = Offset(w * 0.5f, h * 0.50f)
             )
 
-            // 2. Angkor Wat Silhouette in Background Mist (Low Opacity)
-            val templeBaseY = h * 0.48f
-            val sandstoneSilhouette = Color(0xFFC79E5C).copy(alpha = 0.16f)
-            val strokeColor = Color(0xFFA57C36).copy(alpha = 0.20f)
+            // 2. Subtle luxury woven fabric texture lines (horizontal & vertical grain)
+            val fabricColor = Color(0xFFFFFFFF).copy(alpha = 0.015f)
+            val step = 16f
+            var y = 0f
+            while (y < h) {
+                drawLine(
+                    color = fabricColor,
+                    start = Offset(0f, y),
+                    end = Offset(w, y),
+                    strokeWidth = 1f
+                )
+                y += step
+            }
+            var x = 0f
+            while (x < w) {
+                drawLine(
+                    color = fabricColor,
+                    start = Offset(x, 0f),
+                    end = Offset(x, h),
+                    strokeWidth = 1f
+                )
+                x += step
+            }
+
+            // 3. Angkor Wat Towers in Warm Golden Mist (Upper region)
+            val templeBaseY = h * 0.35f
+            val goldSilhouette = Color(0xFFE2C474).copy(alpha = 0.10f)
+            val strokeColor = Color(0xFFD4AF37).copy(alpha = 0.14f)
 
             fun drawAngkorTower(
                 centerX: Float,
                 baseY: Float,
                 towerW: Float,
-                towerH: Float,
-                fillColor: Color
+                towerH: Float
             ) {
                 val path = Path().apply {
                     val halfW = towerW / 2f
@@ -97,139 +119,40 @@ fun AngkorWarmBackground(
                     lineTo(centerX + halfW, baseY)
                     close()
                 }
-                drawPath(path, fillColor)
+                drawPath(path, goldSilhouette)
                 drawPath(path, strokeColor, style = Stroke(1.0.dp.toPx()))
             }
 
             // 5 Iconic Angkor Wat Spire Towers
-            drawAngkorTower(w * 0.18f, templeBaseY, w * 0.12f, h * 0.12f, sandstoneSilhouette)
-            drawAngkorTower(w * 0.33f, templeBaseY, w * 0.15f, h * 0.18f, sandstoneSilhouette)
-            drawAngkorTower(w * 0.50f, templeBaseY, w * 0.20f, h * 0.25f, Color(0xFFD4AF37).copy(alpha = 0.22f))
-            drawAngkorTower(w * 0.67f, templeBaseY, w * 0.15f, h * 0.18f, sandstoneSilhouette)
-            drawAngkorTower(w * 0.82f, templeBaseY, w * 0.12f, h * 0.12f, sandstoneSilhouette)
+            drawAngkorTower(w * 0.18f, templeBaseY, w * 0.12f, h * 0.10f)
+            drawAngkorTower(w * 0.33f, templeBaseY, w * 0.15f, h * 0.15f)
+            drawAngkorTower(w * 0.50f, templeBaseY, w * 0.20f, h * 0.20f)
+            drawAngkorTower(w * 0.67f, templeBaseY, w * 0.15f, h * 0.15f)
+            drawAngkorTower(w * 0.82f, templeBaseY, w * 0.12f, h * 0.10f)
 
-            // 3. Central Bayon Serene Stone Faces & Lotus Crown (Translucent Warm Gold ~ 12-16% opacity)
-            val bayonCenterX = w * 0.5f
-            val bayonCenterY = h * 0.68f
-            val bayonWidth = w * 0.65f
-            val bayonHeight = h * 0.32f
-            val bayonGold = Color(0xFFB48528).copy(alpha = 0.13f)
-            val bayonLine = Color(0xFF8C5E1A).copy(alpha = 0.18f)
-
-            // Bayon Lotus Crown Top
-            val crownPath = Path().apply {
-                moveTo(bayonCenterX - bayonWidth * 0.32f, bayonCenterY - bayonHeight * 0.38f)
-                cubicTo(
-                    bayonCenterX - bayonWidth * 0.20f, bayonCenterY - bayonHeight * 0.52f,
-                    bayonCenterX + bayonWidth * 0.20f, bayonCenterY - bayonHeight * 0.52f,
-                    bayonCenterX + bayonWidth * 0.32f, bayonCenterY - bayonHeight * 0.38f
-                )
-                lineTo(bayonCenterX + bayonWidth * 0.22f, bayonCenterY - bayonHeight * 0.28f)
-                lineTo(bayonCenterX - bayonWidth * 0.22f, bayonCenterY - bayonHeight * 0.28f)
-                close()
-            }
-            drawPath(crownPath, bayonGold)
-            drawPath(crownPath, bayonLine, style = Stroke(1.2.dp.toPx()))
-
-            // Bayon Stone Tower Pillar
-            val pillarPath = Path().apply {
-                moveTo(bayonCenterX - bayonWidth * 0.36f, bayonCenterY - bayonHeight * 0.28f)
-                lineTo(bayonCenterX + bayonWidth * 0.36f, bayonCenterY - bayonHeight * 0.28f)
-                lineTo(bayonCenterX + bayonWidth * 0.32f, bayonCenterY + bayonHeight * 0.45f)
-                lineTo(bayonCenterX - bayonWidth * 0.32f, bayonCenterY + bayonHeight * 0.45f)
-                close()
-            }
-            drawPath(pillarPath, bayonGold)
-            drawPath(pillarPath, bayonLine, style = Stroke(1.2.dp.toPx()))
-
-            // Serene Smiling Face - Left & Right Contours
-            fun drawSereneFace(faceCenterX: Float, faceY: Float, scale: Float) {
-                val fw = bayonWidth * 0.32f * scale
-                val fh = bayonHeight * 0.42f * scale
-
-                // Eyebrow curves
-                val browPath = Path().apply {
-                    moveTo(faceCenterX - fw * 0.35f, faceY - fh * 0.12f)
-                    cubicTo(
-                        faceCenterX - fw * 0.15f, faceY - fh * 0.22f,
-                        faceCenterX + fw * 0.15f, faceY - fh * 0.22f,
-                        faceCenterX + fw * 0.35f, faceY - fh * 0.12f
-                    )
-                }
-                drawPath(browPath, bayonLine, style = Stroke(1.5.dp.toPx()))
-
-                // Serene Closed Eyes (Meditation)
-                val leftEye = Path().apply {
-                    moveTo(faceCenterX - fw * 0.32f, faceY - fh * 0.04f)
-                    cubicTo(
-                        faceCenterX - fw * 0.22f, faceY + fh * 0.02f,
-                        faceCenterX - fw * 0.12f, faceY + fh * 0.02f,
-                        faceCenterX - fw * 0.04f, faceY - fh * 0.04f
-                    )
-                }
-                drawPath(leftEye, bayonLine, style = Stroke(1.5.dp.toPx()))
-
-                val rightEye = Path().apply {
-                    moveTo(faceCenterX + fw * 0.04f, faceY - fh * 0.04f)
-                    cubicTo(
-                        faceCenterX + fw * 0.12f, faceY + fh * 0.02f,
-                        faceCenterX + fw * 0.22f, faceY + fh * 0.02f,
-                        faceCenterX + fw * 0.32f, faceY - fh * 0.04f
-                    )
-                }
-                drawPath(rightEye, bayonLine, style = Stroke(1.5.dp.toPx()))
-
-                // Gentle Broad Nose
-                val nosePath = Path().apply {
-                    moveTo(faceCenterX, faceY - fh * 0.12f)
-                    lineTo(faceCenterX, faceY + fh * 0.14f)
-                    cubicTo(
-                        faceCenterX - fw * 0.10f, faceY + fh * 0.17f,
-                        faceCenterX + fw * 0.10f, faceY + fh * 0.17f,
-                        faceCenterX, faceY + fh * 0.14f
-                    )
-                }
-                drawPath(nosePath, bayonLine, style = Stroke(1.2.dp.toPx()))
-
-                // Iconic Bayon Serene Compassionate Smile
-                val smilePath = Path().apply {
-                    moveTo(faceCenterX - fw * 0.28f, faceY + fh * 0.25f)
-                    cubicTo(
-                        faceCenterX - fw * 0.14f, faceY + fh * 0.33f,
-                        faceCenterX + fw * 0.14f, faceY + fh * 0.33f,
-                        faceCenterX + fw * 0.28f, faceY + fh * 0.25f
-                    )
-                }
-                drawPath(smilePath, bayonLine, style = Stroke(2.0.dp.toPx()))
-            }
-
-            // Left Face (Profile Angle)
-            drawSereneFace(bayonCenterX - bayonWidth * 0.18f, bayonCenterY + bayonHeight * 0.05f, 0.95f)
-
-            // Right Face (Profile Angle)
-            drawSereneFace(bayonCenterX + bayonWidth * 0.18f, bayonCenterY + bayonHeight * 0.05f, 0.95f)
-
-            // 4. Delicate Khmer Kbach Flame / Lotus Flourishes (Corner Ornaments)
-            val filigreeColor = Color(0xFFC59A38).copy(alpha = 0.14f)
-            fun drawKhmerFlourish(originX: Float, originY: Float, flipX: Float) {
+            // 4. Delicate Khmer Kbach Lotus Ornaments in the corners
+            val filigreeColor = Color(0xFFE2C474).copy(alpha = 0.12f)
+            fun drawCornerFlourish(originX: Float, originY: Float, flipX: Float, flipY: Float) {
                 val fPath = Path().apply {
                     moveTo(originX, originY)
                     cubicTo(
-                        originX + (30f * flipX), originY - 40f,
-                        originX + (60f * flipX), originY - 20f,
-                        originX + (45f * flipX), originY + 20f
+                        originX + (36f * flipX), originY + (4f * flipY),
+                        originX + (54f * flipX), originY + (24f * flipY),
+                        originX + (36f * flipX), originY + (48f * flipY)
                     )
                     cubicTo(
-                        originX + (30f * flipX), originY + 50f,
-                        originX + (10f * flipX), originY + 30f,
+                        originX + (20f * flipX), originY + (56f * flipY),
+                        originX + (8f * flipX), originY + (32f * flipY),
                         originX, originY
                     )
                 }
                 drawPath(fPath, filigreeColor)
             }
 
-            drawKhmerFlourish(bayonCenterX - bayonWidth * 0.38f, bayonCenterY + bayonHeight * 0.30f, -1f)
-            drawKhmerFlourish(bayonCenterX + bayonWidth * 0.38f, bayonCenterY + bayonHeight * 0.30f, 1f)
+            drawCornerFlourish(16f, 16f, 1f, 1f)
+            drawCornerFlourish(w - 16f, 16f, -1f, 1f)
+            drawCornerFlourish(16f, h - 16f, 1f, -1f)
+            drawCornerFlourish(w - 16f, h - 16f, -1f, -1f)
         }
 
         // Inner Screen Content
