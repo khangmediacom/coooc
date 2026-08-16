@@ -1,0 +1,7 @@
+{
+  "name": "Cờ Ốc Khmer",
+  "description": "Ứng dụng cờ Ốc Khmer (Ouk Chaktrang) đỉnh cao với đầy đủ luật chơi truyền thống, đấu máy AI nhiều cấp độ, phòng chơi trực tuyến & cục bộ, bài học chiến thuật, xem lại trận đấu, tùy chỉnh bàn cờ và bảng xếp hạng.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
