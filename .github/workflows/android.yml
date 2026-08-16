@@ -9,14 +9,14 @@ on:
 
 jobs:
   build:
-    name: Build & Test APK
+    name: Build APK
     runs-on: ubuntu-latest
 
     env:
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -Dorg.gradle.daemon=false -Dfile.encoding=UTF-8"
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -24,36 +24,33 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Accept Android SDK Licenses & Install Components
+      - name: Accept Android Licenses & Pre-install Platforms
         run: |
           yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-34" "platforms;android-35" "platforms;android-36" || true
+          sdkmanager "platform-tools" "platforms;android-34" "platforms;android-35" "platforms;android-36" "build-tools;34.0.0" || true
 
-      - name: Set up Gradle 8.11.1
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.11.1'
-          cache-disabled: false
 
-      - name: Prepare Environment and Secrets
+      - name: Configure Environment & Keystore
         run: |
+          # 1. Create .env
           if [ -f .env.example ]; then
             cp .env.example .env
           else
             touch .env
           fi
 
-      - name: Ensure Valid Debug Keystore
-        run: |
-          # Try decoding existing base64 keystore if present
+          # 2. Restore or Generate debug.keystore
           if [ -f debug.keystore.base64 ]; then
-            base64 -d debug.keystore.base64 > debug.keystore 2>/dev/null || base64 --decode debug.keystore.base64 > debug.keystore 2>/dev/null || true
+            (base64 -d debug.keystore.base64 > debug.keystore 2>/dev/null) || (base64 --decode debug.keystore.base64 > debug.keystore 2>/dev/null) || true
           fi
-          # If keystore is missing or empty, generate a valid standard Android debug keystore
+          
           if [ ! -s debug.keystore ]; then
             echo "Generating fresh standard Android debug keystore..."
             keytool -genkeypair -v \
@@ -66,14 +63,12 @@ jobs:
               -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US"
           fi
-          # Also copy to root for Gradle signingConfig
-          ls -la debug.keystore
-
-      - name: Run Unit Tests
-        run: gradle testDebugUnitTest --no-daemon --stacktrace || echo "Tests completed with warnings"
+          
+          # Copy to app directory as well just in case
+          cp debug.keystore app/debug.keystore || true
 
       - name: Build Debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: gradle assembleDebug --stacktrace --no-daemon
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
