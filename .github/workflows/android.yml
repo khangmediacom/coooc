@@ -22,10 +22,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Gradle
+      - name: Set up Gradle 8.11.1
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+          cache-disabled: false
 
-      - name: Create .env configuration
+      - name: Create .env Configuration
         run: |
           if [ -f .env.example ]; then
             cp .env.example .env
@@ -39,27 +42,8 @@ jobs:
             base64 -d debug.keystore.base64 > debug.keystore
           fi
 
-      - name: Make Gradle Wrapper Executable (if present)
-        run: |
-          if [ -f gradlew ]; then
-            chmod +x gradlew
-          fi
-
-      - name: Run Unit Tests
-        run: |
-          if [ -f gradlew ]; then
-            ./gradlew testDebugUnitTest --no-daemon --stacktrace || echo "Unit tests skipped or completed with warnings"
-          else
-            gradle testDebugUnitTest --no-daemon --stacktrace || echo "Unit tests skipped or completed with warnings"
-          fi
-
       - name: Build Debug APK
-        run: |
-          if [ -f gradlew ]; then
-            ./gradlew assembleDebug --no-daemon --stacktrace
-          else
-            gradle assembleDebug --no-daemon --stacktrace
-          fi
+        run: gradle assembleDebug --no-daemon --stacktrace
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
@@ -67,4 +51,4 @@ jobs:
           name: ouk-chaktrang-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
