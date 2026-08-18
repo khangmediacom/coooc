@@ -17,7 +17,15 @@ object AppStrings {
         // App & Navigation
         "app_title" to "Ouk Chatrang",
         "app_subtitle" to "Ancient Khmer Chess",
-        "home" to "Home",
+        "angkor_era" to "Angkor · 802 AD",
+        "welcome_greeting" to "Sursdey!",
+        "welcome_tagline" to "I am Hanuman, your guide through the royal game of Angkor.",
+        "choose_language" to "CHOOSE YOUR LANGUAGE",
+        "enter" to "Chiến thôi!",
+        "welcome_note" to "You can change the language later in Settings.",
+        "home" to "Trang chủ",
+        "flip_board" to "Flip Board",
+        "new_game" to "New Game",
         "play" to "Play",
         "learn" to "Learn",
         "profile" to "Profile",
@@ -54,6 +62,9 @@ object AppStrings {
         "leaderboard_desc" to "Top 100 Players",
         "custom_themes" to "Custom Themes",
         "custom_themes_desc" to "Angkor Stone, Royal Ivory, and Wooden Carvings",
+        "pieces_guide" to "Pieces of Ouk Chatrang",
+        "daily_wisdom" to "Daily Wisdom",
+        "ranks" to "Ranks",
 
         // AI Setup Dialog
         "ai_setup_title" to "Play vs AI Engine",
@@ -160,6 +171,12 @@ object AppStrings {
         // App & Navigation
         "app_title" to "Cờ Ốc Khmer",
         "app_subtitle" to "Ouk Chatrang Truyền Thống",
+        "angkor_era" to "Angkor · 802 AD",
+        "welcome_greeting" to "Sursdey!",
+        "welcome_tagline" to "Tôi là Hanuman, người dẫn đường cho bạn qua vương triều cờ Ốc Angkor.",
+        "choose_language" to "CHỌN NGÔN NGỮ",
+        "enter" to "Chiến thôi!",
+        "welcome_note" to "Bạn có thể thay đổi ngôn ngữ sau trong Cài đặt.",
         "home" to "Trang chủ",
         "play" to "Chơi cờ",
         "learn" to "Học cờ",
@@ -197,6 +214,9 @@ object AppStrings {
         "leaderboard_desc" to "Top 100 Kỳ thủ",
         "custom_themes" to "Giao diện bàn cờ",
         "custom_themes_desc" to "Đá Angkor, Ngà voi hoàng gia và Gỗ quý",
+        "pieces_guide" to "Các Quân Cờ Ốc Khmer",
+        "daily_wisdom" to "Lời Khuyên Kỳ Thủ",
+        "ranks" to "Xếp hạng",
 
         // AI Setup Dialog
         "ai_setup_title" to "Thiết Lập Đấu Với Máy",
@@ -303,7 +323,15 @@ object AppStrings {
         // App & Navigation
         "app_title" to "អុកចត្រង្គ",
         "app_subtitle" to "អុកបុរាណខ្មែរ",
+        "angkor_era" to "Angkor · 802 AD",
+        "welcome_greeting" to "សួស្តី!",
+        "welcome_tagline" to "ខ្ញុំគឺហនុមាន នឹងនាំអ្នកទៅកាន់ល្បែងព្រះរាជានៃអង្គរ។",
+        "choose_language" to "ជ្រើសរើសភាសា",
+        "enter" to "Chiến thôi!",
+        "welcome_note" to "អ្នកអាចប្តូរភាសានៅពេលក្រោយក្នុងការកំណត់។",
         "home" to "ទំព័រដើម",
+        "flip_board" to "បង្វិលក្តារ",
+        "new_game" to "ហ្គេមថ្មី",
         "play" to "លេង",
         "learn" to "រៀន",
         "profile" to "គណនី",
@@ -340,6 +368,9 @@ object AppStrings {
         "leaderboard_desc" to "កីឡាករកំពូល ១០០ នាក់",
         "custom_themes" to "ស្បែកក្តារអុក",
         "custom_themes_desc" to "ថ្មអង្គរ ភ្លុកដំរី និងឈើប្រណិត",
+        "pieces_guide" to "គ្រាប់អុកចត្រង្គ",
+        "daily_wisdom" to "ដំបូន្មានប្រចាំថ្ងៃ",
+        "ranks" to "ចំណាត់ថ្នាក់",
 
         // AI Setup Dialog
         "ai_setup_title" to "កំណត់ការលេងជាមួយ AI",
@@ -446,7 +477,15 @@ object AppStrings {
         // App & Navigation
         "app_title" to "Ouk Chatrang",
         "app_subtitle" to "Échecs Traditionnels Khmers",
+        "angkor_era" to "Angkor · 802 AD",
+        "welcome_greeting" to "Bonjour !",
+        "welcome_tagline" to "Je suis Hanuman, votre guide dans le jeu royal d'Angkor.",
+        "choose_language" to "CHOISISSEZ VOTRE LANGUE",
+        "enter" to "Chiến thôi!",
+        "welcome_note" to "Vous pourrez changer la langue plus tard dans les réglages.",
         "home" to "Accueil",
+        "flip_board" to "Tourner",
+        "new_game" to "Nouveau",
         "play" to "Jouer",
         "learn" to "Apprendre",
         "profile" to "Profil",
@@ -483,6 +522,9 @@ object AppStrings {
         "leaderboard_desc" to "Top 100 Joueurs",
         "custom_themes" to "Thèmes Personnalisés",
         "custom_themes_desc" to "Pierre d'Angkor, Ivoire Royal et Bois Sculpté",
+        "pieces_guide" to "Pièces d'Ouk Chatrang",
+        "daily_wisdom" to "Sagesse Quotidienne",
+        "ranks" to "Rangs",
 
         // AI Setup Dialog
         "ai_setup_title" to "Configurer la partie contre l'IA",

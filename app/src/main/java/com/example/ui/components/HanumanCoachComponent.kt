@@ -56,6 +56,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import coil.compose.SubcomposeAsyncImage
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -65,6 +68,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
@@ -151,85 +156,19 @@ fun AnimatedHanumanCoach(
     val infiniteTransition = rememberInfiniteTransition(label = "hanuman_anim")
 
     // 1. Natural Breathing & Floating
-    val breathOffsetY by infiniteTransition.animateFloat(
-        initialValue = -2.5f,
-        targetValue = 2.5f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = when (mood) {
-                    HanumanMood.HAPPY -> 600
-                    HanumanMood.ALERT -> 800
-                    HanumanMood.THINKING -> 2400
-                    HanumanMood.MEDITATING -> 3000
-                    else -> 1800
-                },
-                easing = FastOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "breath"
-    )
+    val breathOffsetY = 1f
 
     // 2. Subtle head tilt / bobbing
-    val headTiltAngle by infiniteTransition.animateFloat(
-        initialValue = when (mood) {
-            HanumanMood.THINKING -> -5f
-            HanumanMood.HAPPY -> -3f
-            else -> -1.5f
-        },
-        targetValue = when (mood) {
-            HanumanMood.THINKING -> 5f
-            HanumanMood.HAPPY -> 3f
-            else -> 1.5f
-        },
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = when (mood) {
-                    HanumanMood.HAPPY -> 800
-                    else -> 2200
-                },
-                easing = FastOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "tilt"
-    )
+    val headTiltAngle = 1f
 
     // 3. Mouth movement when talking
-    val mouthOpenProgress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = if (mood == HanumanMood.TALKING) 250 else 1000,
-                easing = LinearEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "mouth"
-    )
+    val mouthOpenProgress = 1f
 
     // 4. Sparkle / Golden Aura Rotation
-    val auraRotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "aura_rot"
-    )
+    val auraRotation = 1f
 
     // 5. Crown Glow Pulse
-    val crownGlowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 0.9f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "glow"
-    )
+    val crownGlowAlpha = 1f
 
     val auraBorderColor = when (mood) {
         HanumanMood.HAPPY -> Color(0xFF10B981)

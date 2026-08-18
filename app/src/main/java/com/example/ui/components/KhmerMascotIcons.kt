@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -51,15 +53,7 @@ fun KhmerAppLogo(
     onClick: (() -> Unit)? = null
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "logo_anim")
-    val subtlePulse by infiniteTransition.animateFloat(
-        initialValue = 0.98f,
-        targetValue = 1.02f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2400, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse"
-    )
+    val subtlePulse = 1f
 
     Box(
         modifier = modifier
@@ -305,15 +299,7 @@ fun KhmerMascotThinking(
     size: Dp = 56.dp
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "think_anim")
-    val tiltAnim by infiniteTransition.animateFloat(
-        initialValue = -3f,
-        targetValue = 3f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "tilt"
-    )
+    val tiltAnim = 1f
 
     Box(
         modifier = modifier
@@ -398,15 +384,7 @@ fun KhmerMascotPlaying(
     size: Dp = 64.dp
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "play_anim")
-    val handBob by infiniteTransition.animateFloat(
-        initialValue = -2f,
-        targetValue = 2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "hand"
-    )
+    val handBob = 1f
 
     Box(
         modifier = modifier
@@ -491,15 +469,7 @@ fun KhmerMascotVictory(
     size: Dp = 64.dp
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "vic_anim")
-    val sparkleAngle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6000),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "sparkle"
-    )
+    val sparkleAngle = 1f
 
     Box(
         modifier = modifier

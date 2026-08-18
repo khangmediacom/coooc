@@ -2,40 +2,63 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Warm Luminous Sandstone & Lotus Cream Palette (Angkor Daylight Theme)
-val AngkorWarmCanvas = Color(0xFFFFFDF8)
-val AngkorWarmSurface = Color(0xFFFAF6EE)
-val AngkorWarmCard = Color(0xFFFFFFFF)
-val AngkorWarmHeader = Color(0xFFFFF9EE)
-val AngkorWarmNav = Color(0xFFFAF4E8)
-val AngkorWarmBorder = Color(0xFFE8DCB8)
-val AngkorWarmAvatarBg = Color(0xFFF3E7CA)
+// Ouk Chatrang Lovable Design Palette
+val LateriteDark = Color(0xFF1A1412)
+val LateriteSurface = Color(0xFF261D1A)
+val RoyalGold = Color(0xFFD4AF37)
+val RoyalGoldLight = Color(0xFFE8D388)
+val RoyalGoldDark = Color(0xFF997A24)
 
-// Royal Cambodian Gold Accents
-val AngkorGold = Color(0xFFC89320)
-val AngkorGoldLight = Color(0xFFFDE68A)
-val AngkorGoldDark = Color(0xFF92400E)
-val KhmerAmber = Color(0xFFD97706)
-
-// Classic Wood & Stone Board Palette
-val TraditionalBoardBorder = Color(0xFF78350F)
-val TraditionalBoardLight = Color(0xFFF5E6CC)
-val TraditionalBoardDark = Color(0xFFC89B66)
-
-val RoyalTeakDark = Color(0xFF451A03)
-val RoyalTeakMedium = Color(0xFF78350F)
-val RoyalWoodLight = Color(0xFFEDE0D4)
-val RoyalWoodDark = Color(0xFF9C6644)
+val AngkorWarmCanvas = LateriteDark
+val AngkorWarmSurface = LateriteSurface
+val AngkorWarmCard = Color(0xFF2A201C)
+val AngkorWarmHeader = Color(0xFF201815)
+val AngkorWarmNav = LateriteSurface
+val AngkorWarmBorder = Color(0xFF382B26)
+val AngkorWarmAvatarBg = Color(0xFF3A2E26)
 
 // Functional Status Accents
-val LiveGreen = Color(0xFF16A34A)
-val JadeEmerald = Color(0xFF059669)
-val JadeEmeraldDark = Color(0xFF065F46)
-val TerracottaRed = Color(0xFFDC2626)
-val CrimsonKhmer = Color(0xFFB91C1C)
+val LiveGreen = Color(0xFF22C55E)
+val JadeEmerald = Color(0xFF10B981)
+val TerracottaRed = Color(0xFFEF4444)
 
-// Typography Colors (High-contrast, crisp warm dark slate)
-val TextPrimaryDark = Color(0xFF1E293B)
-val TextSecondaryDark = Color(0xFF64748B)
-val TextPrimaryLight = Color(0xFF0F172A)
+// Typography Colors (High-contrast for dark theme)
+val TextPrimaryDark = Color(0xFFF8F5F1)
+val TextSecondaryDark = Color(0xFFD4CCBF)
+val TextPrimaryLight = Color(0xFF1E293B)
 val TextSecondaryLight = Color(0xFF475569)
+
+// Classic Wood & Stone Board Palette
+val TraditionalBoardBorder = Color(0xFF3E2C20)
+val TraditionalBoardLight = Color(0xFFE6C8A6)
+val TraditionalBoardDark = Color(0xFFC08A56)
+
+val RoyalTeakDark = Color(0xFF2D180F)
+val RoyalTeakMedium = Color(0xFF4A2511)
+val RoyalWoodLight = Color(0xFFD1B59C)
+val RoyalWoodDark = Color(0xFF8B5A3C)
+
+// Legacy Aliases
+
+// Re-add missing colors
+val Gold = RoyalGold
+val GoldDark = RoyalGoldDark
+val GoldLight = RoyalGoldLight
+val TextLight = TextPrimaryLight
+val TextMutedLight = TextSecondaryLight
+val Jade = JadeEmerald
+val BoardSandstoneLight = TraditionalBoardLight
+val BoardSandstoneDark = TraditionalBoardDark
+val BoardTeakLight = RoyalWoodLight
+val BoardTeakDark = RoyalWoodDark
+val BoardIvoryLight = TraditionalBoardLight
+val BoardIvoryDark = TraditionalBoardDark
+val BoardJadeLight = TraditionalBoardLight
+val BoardJadeDark = TraditionalBoardDark
+val Teak = RoyalTeakMedium
+val AngkorGold = RoyalGold
+
+val AngkorGoldDark = RoyalGoldDark
+val KhmerAmber = RoyalGold
+val TextPrimary = TextPrimaryDark
+val TextSecondary = TextSecondaryDark

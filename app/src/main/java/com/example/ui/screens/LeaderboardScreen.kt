@@ -3,278 +3,191 @@ package com.example.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.AppLanguage
-import com.example.data.model.LeaderboardEntry
-import com.example.ui.components.AngkorWarmBackground
-import com.example.ui.components.GoogleLogo
 import com.example.ui.localization.AppStrings
-import com.example.ui.theme.AngkorGold
+import com.example.ui.theme.*
+import com.example.ui.components.AngkorWarmBackground
 
-/**
- * Leaderboard Screen with warm Angkor background and multi-language localization.
- */
+data class PlayerData(val name: String, val rating: Int, val wins: Int, val flag: String)
+
+val PLAYERS = listOf(
+    PlayerData("Sokha Chan", 2412, 318, "\uD83C\uDDF0\uD83C\uDDED"), // 🇰🇭
+    PlayerData("Vibol Prak", 2288, 274, "\uD83C\uDDF0\uD83C\uDDED"), // 🇰🇭
+    PlayerData("Minh Nguyen", 2201, 240, "\uD83C\uDDFB\uD83C\uDDF3"), // 🇻🇳
+    PlayerData("Dara Meas", 2145, 231, "\uD83C\uDDF0\uD83C\uDDED"), // 🇰🇭
+    PlayerData("Claire Rey", 2077, 198, "\uD83C\uDDEB\uD83C\uDDF7"), // 🇫🇷
+    PlayerData("Rithy Sok", 2010, 187, "\uD83C\uDDF0\uD83C\uDDED"), // 🇰🇭
+    PlayerData("Alex Grant", 1954, 172, "\uD83C\uDDEC\uD83C\uDDE7"), // 🇬🇧
+    PlayerData("Bopha Ly", 1902, 160, "\uD83C\uDDF0\uD83C\uDDED")  // 🇰🇭
+)
+
+val TABS = listOf("tab_global", "tab_weekly", "tab_friends")
+
 @Composable
 fun LeaderboardScreen(
-    entries: List<LeaderboardEntry>,
     language: AppLanguage,
-    isLoggedIn: Boolean,
-    onPromptSignIn: () -> Unit,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf(
-        AppStrings.get(language, "tab_global"),
-        AppStrings.get(language, "tab_weekly"),
-        AppStrings.get(language, "tab_friends")
-    )
+    var selectedTab by remember { mutableStateOf(TABS[0]) }
+
+    val currentList = when (selectedTab) {
+        "tab_friends" -> PLAYERS.take(3)
+        "tab_weekly" -> PLAYERS.drop(2)
+        else -> PLAYERS
+    }
 
     AngkorWarmBackground(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Top Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFFFFFFF))
-                        .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color(0xFF1E293B)
-                    )
-                }
-                Spacer(modifier = Modifier.width(14.dp))
-                Column {
-                    Text(
-                        text = AppStrings.get(language, "global_rankings"),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
-                    )
-                    Text(
-                        text = AppStrings.get(language, "global_rankings_desc"),
-                        fontSize = 12.sp,
-                        color = Color(0xFF64748B)
-                    )
-                }
-            }
-
-            // Guest Banner if not logged in
-            if (!isLoggedIn) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(Color(0xFFFFFDF8))
-                        .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(14.dp))
-                        .clickable { onPromptSignIn() }
-                        .padding(horizontal = 14.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        GoogleLogo(modifier = Modifier.size(20.dp))
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column {
-                            Text(
-                                text = AppStrings.get(language, "guest_mode"),
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
-                            )
-                            Text(
-                                text = AppStrings.get(language, "guest_stats_hidden"),
-                                fontSize = 11.sp,
-                                color = Color(0xFF64748B)
-                            )
-                        }
-                    }
-                    Text(
-                        text = AppStrings.get(language, "sign_in_google"),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFD97706)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             // Tabs
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xFFEDE2CD))
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                tabs.forEachIndexed { index, tab ->
-                    val isSelected = selectedTab == index
+                TABS.forEach { tabKey ->
+                    val isSelected = selectedTab == tabKey
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (isSelected) Color(0xFFD97706) else Color.Transparent)
-                            .clickable { selectedTab = index }
-                            .padding(vertical = 8.dp),
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (isSelected) Gold.copy(alpha = 0.2f) else Color.Transparent)
+                            .clickable { selectedTab = tabKey }
+                            .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = tab,
-                            fontSize = 13.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color.White else Color(0xFF64748B)
+                            text = AppStrings.get(language, tabKey),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (isSelected) RoyalGoldDark else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            // Section Title
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.EmojiEvents,
+                    contentDescription = null,
+                    tint = RoyalGold,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = AppStrings.get(language, "leaderboard").uppercase(),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.8.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
+            // List
             LazyColumn(
-                contentPadding = PaddingValues(bottom = 20.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(entries) { entry ->
-                    val isTop3 = entry.rank in 1..3
-                    val medalColor = when (entry.rank) {
-                        1 -> Color(0xFFF59E0B) // Gold
-                        2 -> Color(0xFF94A3B8) // Silver
-                        3 -> Color(0xFFD97706) // Bronze
-                        else -> Color(0xFFE2E8F0)
+                itemsIndexed(currentList) { index, player ->
+                    val medalColor = when (index) {
+                        0 -> RoyalGold
+                        1 -> Color.Gray
+                        2 -> Color(0xFF8B5A2B)
+                        else -> MaterialTheme.colorScheme.onSurface
                     }
 
-                    Card(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .shadow(2.dp, RoundedCornerShape(16.dp))
-                            .border(
-                                1.dp,
-                                if (entry.isCurrentUser) AngkorGold else Color(0xFFE8DCB8),
-                                RoundedCornerShape(16.dp)
-                            )
-                            .testTag("leaderboard_item_${entry.rank}"),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (entry.isCurrentUser) Color(0xFFFFFBEB) else Color(0xFFFFFFFF)
-                        )
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Row(
+                        // Rank Badge
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 14.dp, vertical = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .border(1.dp, Gold.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.secondary),
+                            contentAlignment = Alignment.Center
                         ) {
-                            // Rank Badge + Flag + Player
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .clip(CircleShape)
-                                        .background(if (isTop3) medalColor else Color(0xFFF1E6D0))
-                                        .border(1.dp, medalColor, CircleShape),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "${entry.rank}",
-                                        fontWeight = FontWeight.Black,
-                                        fontSize = 13.sp,
-                                        color = if (isTop3) Color.White else Color(0xFF1E293B)
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.width(12.dp))
-
-                                Column {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(
-                                            text = entry.countryFlag,
-                                            fontSize = 16.sp
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        Text(
-                                            text = entry.playerName,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 14.sp,
-                                            color = Color(0xFF1E293B)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = "${entry.tier} • ${entry.wins}W / ${entry.losses}L (${entry.winRate}%)",
-                                        fontSize = 11.sp,
-                                        color = Color(0xFF64748B)
-                                    )
-                                }
-                            }
-
-                            // Elo Points
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(
-                                    text = "${entry.elo}",
-                                    fontWeight = FontWeight.Black,
-                                    fontSize = 16.sp,
-                                    color = Color(0xFFD97706)
+                            if (index < 3) {
+                                Icon(
+                                    imageVector = Icons.Default.EmojiEvents,
+                                    contentDescription = null,
+                                    tint = medalColor,
+                                    modifier = Modifier.size(16.dp)
                                 )
+                            } else {
                                 Text(
-                                    text = "Elo",
-                                    fontSize = 10.sp,
-                                    color = Color(0xFF64748B)
+                                    text = (index + 1).toString(),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
+                        }
+
+                        // Player Info
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "${player.flag} ${player.name}",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1
+                            )
+                            Text(
+                                text = "${player.wins} ${AppStrings.get(language, "win")}",
+                                fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        // Rating Badge
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(100))
+                                .border(1.dp, JadeEmerald.copy(alpha = 0.4f), RoundedCornerShape(100))
+                                .background(JadeEmerald.copy(alpha = 0.1f))
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = player.rating.toString(),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = JadeEmerald
+                            )
                         }
                     }
                 }

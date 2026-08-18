@@ -2,56 +2,39 @@ package com.example.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FlashOn
-import androidx.compose.material.icons.filled.MeetingRoom
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.AppLanguage
-import com.example.ui.components.AngkorWarmBackground
 import com.example.ui.localization.AppStrings
-import com.example.ui.theme.AngkorGold
-import com.example.ui.theme.JadeEmerald
+import com.example.ui.theme.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-/**
- * Online Matchmaking & Private Room Lobby with warm Angkor vector background and full localization.
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnlineLobbyScreen(
     isSearching: Boolean,
@@ -60,232 +43,206 @@ fun OnlineLobbyScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var searching = isSearching
     var roomPin by remember { mutableStateOf("") }
-    var generatedRoomPin by remember { mutableStateOf<String?>(null) }
+    var generatedRoom by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
-    AngkorWarmBackground(modifier = modifier) {
-        Column(
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // Quick Match Section
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, JadeEmerald.copy(alpha = 0.2f), RoundedCornerShape(24.dp))
+                .padding(16.dp)
         ) {
-            // Header
-            Row(
+            // Blur glow
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = onBack,
+                    .align(Alignment.TopEnd)
+                    .offset(x = 32.dp, y = (-32).dp)
+                    .size(96.dp)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(JadeEmerald.copy(alpha = 0.2f), Color.Transparent)
+                        )
+                    )
+            )
+
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(1.dp, JadeEmerald.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                            .background(JadeEmerald.copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Public,
+                            contentDescription = null,
+                            tint = JadeEmerald,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = AppStrings.get(language, "quick_match"),
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = AppStrings.get(language, "quick_match_desc"),
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFFFFFFF))
-                        .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color(0xFF1E293B)
-                    )
-                }
-                Spacer(modifier = Modifier.width(14.dp))
-                Column {
-                    Text(
-                        text = AppStrings.get(language, "online_matchmaking"),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
-                    )
-                    Text(
-                        text = AppStrings.get(language, "online_matchmaking_desc"),
-                        fontSize = 12.sp,
-                        color = Color(0xFF64748B)
-                    )
-                }
-            }
-
-            if (isSearching) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    CircularProgressIndicator(color = Color(0xFFD97706), modifier = Modifier.size(54.dp))
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = AppStrings.get(language, "searching_opponent"),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = AppStrings.get(language, "searching_desc"),
-                        fontSize = 12.sp,
-                        color = Color(0xFF64748B)
-                    )
-                }
-            } else {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    // Quick Match Card
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .shadow(3.dp, RoundedCornerShape(20.dp))
-                            .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(20.dp)),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF))
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(18.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(52.dp)
-                                    .clip(CircleShape)
-                                    .background(Color(0xFFFEF3C7))
-                                    .border(1.dp, Color(0xFFFDE68A), CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(Icons.Default.FlashOn, contentDescription = null, tint = Color(0xFFD97706), modifier = Modifier.size(30.dp))
-                            }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = AppStrings.get(language, "quick_match"),
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                        .fillMaxWidth()
+                        .shadow(12.dp, RoundedCornerShape(16.dp), spotColor = RoyalGold)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(RoyalGoldDark, RoyalGold.copy(alpha = 0.9f), GoldLight)
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = AppStrings.get(language, "quick_match_desc"),
-                                fontSize = 12.sp,
-                                color = Color(0xFF64748B)
+                        )
+                        .clickable { onQuickMatch() }
+                        .padding(horizontal = 20.dp, vertical = 14.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (searching) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                strokeWidth = 2.dp,
+                                modifier = Modifier.size(20.dp)
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(
-                                onClick = onQuickMatch,
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD97706)),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp)
-                                    .clip(RoundedCornerShape(14.dp))
-                                    .testTag("quick_match_search_btn")
-                            ) {
-                                Text(text = AppStrings.get(language, "find_match"), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                            }
+                            Text(
+                                text = AppStrings.get(language, "searching_opponent"),
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
-                    }
-
-                    // Private Room Card
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .shadow(3.dp, RoundedCornerShape(20.dp))
-                            .border(1.dp, Color(0xFFE8DCB8), RoundedCornerShape(20.dp)),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF))
-                    ) {
-                        Column(modifier = Modifier.padding(18.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.MeetingRoom, contentDescription = null, tint = Color(0xFF7C3AED))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = AppStrings.get(language, "private_match"),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E293B)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            if (generatedRoomPin == null) {
-                                Button(
-                                    onClick = {
-                                        generatedRoomPin = (100000..999999).random().toString()
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(44.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                ) {
-                                    Text(text = AppStrings.get(language, "create_room_pin"), color = Color.White, fontWeight = FontWeight.Bold)
-                                }
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(Color(0xFFF5F3FF))
-                                        .border(1.dp, Color(0xFFDDD6FE), RoundedCornerShape(12.dp))
-                                        .padding(12.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Text(text = "ROOM PIN CODE", fontSize = 11.sp, color = Color(0xFF6B7280), fontWeight = FontWeight.Bold)
-                                        Text(
-                                            text = generatedRoomPin ?: "",
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Black,
-                                            color = Color(0xFF7C3AED),
-                                            letterSpacing = 4.sp
-                                        )
-                                        Text(text = AppStrings.get(language, "waiting_friend"), fontSize = 11.sp, color = Color(0xFF6B7280))
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(14.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                OutlinedTextField(
-                                    value = roomPin,
-                                    onValueChange = { if (it.length <= 6) roomPin = it },
-                                    placeholder = { Text(AppStrings.get(language, "enter_pin"), fontSize = 13.sp, color = Color(0xFF64748B)) },
-                                    singleLine = true,
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = Color(0xFFD97706),
-                                        unfocusedBorderColor = Color(0xFFE8DCB8),
-                                        focusedTextColor = Color(0xFF1E293B),
-                                        unfocusedTextColor = Color(0xFF1E293B)
-                                    ),
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Button(
-                                    onClick = {
-                                        if (roomPin.length == 6) {
-                                            onQuickMatch()
-                                        }
-                                    },
-                                    enabled = roomPin.length == 6,
-                                    colors = ButtonDefaults.buttonColors(containerColor = JadeEmerald),
-                                    modifier = Modifier
-                                        .height(52.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                ) {
-                                    Text(text = AppStrings.get(language, "join"), color = Color.White, fontWeight = FontWeight.Bold)
-                                }
-                            }
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(
+                                imageVector = Icons.Default.FlashOn,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = AppStrings.get(language, "find_match"),
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
                     }
                 }
             }
+        }
 
-            Box(modifier = Modifier.height(20.dp))
+        KbachDividerLine()
+
+        // Private Match Section
+        SectionTitle(title = AppStrings.get(language, "private_match"), icon = Icons.Default.People)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(16.dp)
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(1.dp, RoyalGold.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                        .background(RoyalGold.copy(alpha = 0.1f))
+                        .clickable { 
+                            val randomPin = (100000..999999).random().toString()
+                            generatedRoom = randomPin
+                        }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(imageVector = Icons.Default.Key, contentDescription = null, tint = RoyalGoldDark, modifier = Modifier.size(16.dp))
+                        Text(
+                            text = AppStrings.get(language, "create_room_pin"),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            color = RoyalGoldDark
+                        )
+                    }
+                }
+
+                if (generatedRoom != null) {
+                    Text(
+                        text = generatedRoom!!,
+                        fontFamily = FontFamily.Serif,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        letterSpacing = 4.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = roomPin,
+                        onValueChange = { if (it.length <= 6) roomPin = it.filter { char -> char.isDigit() } },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        placeholder = { Text(AppStrings.get(language, "enter_pin")) },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f),
+                            focusedIndicatorColor = RoyalGold,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Button(
+                        onClick = { /* Join */ },
+                        enabled = roomPin.length == 6,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = RoyalGoldDark,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.height(56.dp)
+                    ) {
+                        Text(AppStrings.get(language, "join"), fontWeight = FontWeight.SemiBold)
+                    }
+                }
+            }
         }
     }
 }

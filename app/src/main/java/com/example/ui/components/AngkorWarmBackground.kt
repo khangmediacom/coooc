@@ -2,24 +2,44 @@ package com.example.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import coil.compose.SubcomposeAsyncImage
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.R
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
+import com.example.ui.theme.LateriteDark
+import com.example.ui.theme.LateriteSurface
+import com.example.ui.theme.RoyalGoldDark
+
+private val SkyGoldTop = LateriteDark
+private val SkyGoldWarm = LateriteSurface
+private val TempleSilhouetteColor = RoyalGoldDark
+private val TempleShadowColor = Color(0xFF15100E)
+
 /**
- * Luxury ZingPlay-style Dark Textured Gaming Table Background with Warm Golden Ambient Glow.
- * Features:
- * 1. Deep rich dark charcoal/espresso textured woven mat gradient (just like the ZingPlay game room).
- * 2. Warm amber-gold radial spotlight centered on the board area for maximum depth and contrast.
- * 3. Subtle fine woven texture grid overlay.
- * 4. Elegant Angkor & Bayon golden silhouettes and Khmer lotus filigrees at corner edges.
+ * Warm Golden Sky & Angkor Temple Background for Game & Match screens.
+ * Seamlessly connects the warm golden sunrise sky on top with the majestic Angkor Wat silhouette at the bottom.
  */
 @Composable
 fun AngkorWarmBackground(
@@ -28,9 +48,9 @@ fun AngkorWarmBackground(
 ) {
     val bgGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFF26201B), // Dark espresso / charcoal gaming linen top
-            Color(0xFF1C1714), // Deep warm charcoal center
-            Color(0xFF14110E), // Luxury dark ebony wood base
+            androidx.compose.material3.MaterialTheme.colorScheme.background,
+            androidx.compose.material3.MaterialTheme.colorScheme.surface,
+            androidx.compose.material3.MaterialTheme.colorScheme.surface
         )
     )
 
@@ -39,123 +59,140 @@ fun AngkorWarmBackground(
             .fillMaxSize()
             .background(bgGradient)
     ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
-
-            // 1. Warm Golden Spotlight centered on the playing field (illuminates the chessboard)
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        Color(0xFFD4AF37).copy(alpha = 0.18f),
-                        Color(0xFFB45309).copy(alpha = 0.08f),
-                        Color(0xFF78350F).copy(alpha = 0.03f),
-                        Color.Transparent
-                    ),
-                    center = Offset(w * 0.5f, h * 0.50f),
-                    radius = w * 0.75f
+        // Bottom Angkor Wat Temple Silhouette Canvas aligned against the footer
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(280.dp)
+                .align(Alignment.BottomCenter)
+        ) {
+            val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "bg_rotation")
+            val rotation by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 360f,
+                animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+                    animation = androidx.compose.animation.core.tween(20000, easing = androidx.compose.animation.core.LinearEasing),
+                    repeatMode = androidx.compose.animation.core.RepeatMode.Restart
                 ),
-                radius = w * 0.75f,
-                center = Offset(w * 0.5f, h * 0.50f)
+                label = "rotation"
             )
 
-            // 2. Subtle luxury woven fabric texture lines (horizontal & vertical grain)
-            val fabricColor = Color(0xFFFFFFFF).copy(alpha = 0.015f)
-            val step = 16f
-            var y = 0f
-            while (y < h) {
-                drawLine(
-                    color = fabricColor,
-                    start = Offset(0f, y),
-                    end = Offset(w, y),
-                    strokeWidth = 1f
-                )
-                y += step
-            }
-            var x = 0f
-            while (x < w) {
-                drawLine(
-                    color = fabricColor,
-                    start = Offset(x, 0f),
-                    end = Offset(x, h),
-                    strokeWidth = 1f
-                )
-                x += step
-            }
+            Image(
+                painter = painterResource(id = R.drawable.angkor_bg),
+                contentDescription = null,
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                alignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            )
+            
+            // Rotating Solar Mandala Wheel
+            com.example.ui.screens.SolarMandalaOrnament(
+                color = RoyalGoldDark.copy(alpha = 0.35f),
+                modifier = Modifier
+                    .size(280.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = 60.dp, y = (-40).dp)
+                    .graphicsLayer { rotationZ = rotation }
+            )
 
-            // 3. Angkor Wat Towers in Warm Golden Mist (Upper region)
-            val templeBaseY = h * 0.35f
-            val goldSilhouette = Color(0xFFE2C474).copy(alpha = 0.10f)
-            val strokeColor = Color(0xFFD4AF37).copy(alpha = 0.14f)
-
-            fun drawAngkorTower(
-                centerX: Float,
-                baseY: Float,
-                towerW: Float,
-                towerH: Float
-            ) {
-                val path = Path().apply {
-                    val halfW = towerW / 2f
-                    moveTo(centerX - halfW, baseY)
-                    lineTo(centerX - halfW * 0.88f, baseY - towerH * 0.22f)
-                    lineTo(centerX - halfW * 0.94f, baseY - towerH * 0.25f)
-                    lineTo(centerX - halfW * 0.78f, baseY - towerH * 0.48f)
-                    lineTo(centerX - halfW * 0.84f, baseY - towerH * 0.52f)
-                    lineTo(centerX - halfW * 0.66f, baseY - towerH * 0.70f)
-                    cubicTo(
-                        centerX - halfW * 0.45f, baseY - towerH * 0.88f,
-                        centerX - halfW * 0.12f, baseY - towerH * 0.98f,
-                        centerX, baseY - towerH
+            // Seamless gradient overlay to blend smoothly into the sky color above
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                                androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.40f),
+                                Color.Transparent
+                            ),
+                            startY = 0f,
+                            endY = 220f
+                        )
                     )
-                    cubicTo(
-                        centerX + halfW * 0.12f, baseY - towerH * 0.98f,
-                        centerX + halfW * 0.45f, baseY - towerH * 0.88f,
-                        centerX + halfW * 0.66f, baseY - towerH * 0.70f
-                    )
-                    lineTo(centerX + halfW * 0.84f, baseY - towerH * 0.52f)
-                    lineTo(centerX + halfW * 0.78f, baseY - towerH * 0.48f)
-                    lineTo(centerX + halfW * 0.94f, baseY - towerH * 0.25f)
-                    lineTo(centerX + halfW * 0.88f, baseY - towerH * 0.22f)
-                    lineTo(centerX + halfW, baseY)
-                    close()
-                }
-                drawPath(path, goldSilhouette)
-                drawPath(path, strokeColor, style = Stroke(1.0.dp.toPx()))
-            }
-
-            // 5 Iconic Angkor Wat Spire Towers
-            drawAngkorTower(w * 0.18f, templeBaseY, w * 0.12f, h * 0.10f)
-            drawAngkorTower(w * 0.33f, templeBaseY, w * 0.15f, h * 0.15f)
-            drawAngkorTower(w * 0.50f, templeBaseY, w * 0.20f, h * 0.20f)
-            drawAngkorTower(w * 0.67f, templeBaseY, w * 0.15f, h * 0.15f)
-            drawAngkorTower(w * 0.82f, templeBaseY, w * 0.12f, h * 0.10f)
-
-            // 4. Delicate Khmer Kbach Lotus Ornaments in the corners
-            val filigreeColor = Color(0xFFE2C474).copy(alpha = 0.12f)
-            fun drawCornerFlourish(originX: Float, originY: Float, flipX: Float, flipY: Float) {
-                val fPath = Path().apply {
-                    moveTo(originX, originY)
-                    cubicTo(
-                        originX + (36f * flipX), originY + (4f * flipY),
-                        originX + (54f * flipX), originY + (24f * flipY),
-                        originX + (36f * flipX), originY + (48f * flipY)
-                    )
-                    cubicTo(
-                        originX + (20f * flipX), originY + (56f * flipY),
-                        originX + (8f * flipX), originY + (32f * flipY),
-                        originX, originY
-                    )
-                }
-                drawPath(fPath, filigreeColor)
-            }
-
-            drawCornerFlourish(16f, 16f, 1f, 1f)
-            drawCornerFlourish(w - 16f, 16f, -1f, 1f)
-            drawCornerFlourish(16f, h - 16f, 1f, -1f)
-            drawCornerFlourish(w - 16f, h - 16f, -1f, -1f)
+            )
         }
 
-        // Inner Screen Content
+        // Screen Content Layer
         content()
     }
 }
+
+/**
+ * Vector Angkor Wat Temple Silhouette with 5 Sacred Lotus Towers (Prasat).
+ */
+@Composable
+fun AngkorWatTempleCanvas(
+    modifier: Modifier = Modifier,
+    silhouetteColor: Color = Color(0xFFB45309).copy(alpha = 0.30f),
+    baseColor: Color = Color(0xFF78350F).copy(alpha = 0.20f)
+) {
+    Canvas(modifier = modifier) {
+        val w = size.width
+        val h = size.height
+        val baseY = h * 0.95f
+
+        // Base foundation terrace
+        drawRect(
+            color = baseColor,
+            topLeft = Offset(0f, baseY),
+            size = Size(w, h - baseY)
+        )
+
+        // Draw 5 Iconic Prasat Towers
+        val cx = w * 0.5f
+
+        // Helper to draw a Khmer tiered lotus tower
+        fun drawPrasatTower(towerCx: Float, towerWidth: Float, towerHeight: Float, color: Color) {
+            val topY = baseY - towerHeight
+            val towerPath = Path().apply {
+                // Lotus Bud Finial (Kalasa)
+                moveTo(towerCx, topY)
+                cubicTo(towerCx + towerWidth * 0.08f, topY + towerHeight * 0.06f, towerCx + towerWidth * 0.12f, topY + towerHeight * 0.12f, towerCx + towerWidth * 0.06f, topY + towerHeight * 0.18f)
+                cubicTo(towerCx + towerWidth * 0.22f, topY + towerHeight * 0.28f, towerCx + towerWidth * 0.28f, topY + towerHeight * 0.42f, towerCx + towerWidth * 0.25f, topY + towerHeight * 0.55f)
+                // Tiered steps down to base
+                lineTo(towerCx + towerWidth * 0.36f, topY + towerHeight * 0.65f)
+                lineTo(towerCx + towerWidth * 0.34f, topY + towerHeight * 0.72f)
+                lineTo(towerCx + towerWidth * 0.46f, topY + towerHeight * 0.82f)
+                lineTo(towerCx + towerWidth * 0.44f, topY + towerHeight * 0.88f)
+                lineTo(towerCx + towerWidth * 0.50f, baseY)
+                // Left side mirror
+                lineTo(towerCx - towerWidth * 0.50f, baseY)
+                lineTo(towerCx - towerWidth * 0.44f, topY + towerHeight * 0.88f)
+                lineTo(towerCx - towerWidth * 0.46f, topY + towerHeight * 0.82f)
+                lineTo(towerCx - towerWidth * 0.34f, topY + towerHeight * 0.72f)
+                lineTo(towerCx - towerWidth * 0.36f, topY + towerHeight * 0.65f)
+                cubicTo(towerCx - towerWidth * 0.25f, topY + towerHeight * 0.55f, towerCx - towerWidth * 0.28f, topY + towerHeight * 0.42f, towerCx - towerWidth * 0.22f, topY + towerHeight * 0.28f)
+                cubicTo(towerCx - towerWidth * 0.12f, topY + towerHeight * 0.18f, towerCx - towerWidth * 0.08f, topY + towerHeight * 0.06f, towerCx, topY)
+                close()
+            }
+            drawPath(towerPath, color = color)
+        }
+
+        // Connecting Gallery Galleries
+        val galleryPath = Path().apply {
+            moveTo(w * 0.08f, baseY)
+            lineTo(w * 0.08f, baseY - h * 0.22f)
+            lineTo(w * 0.92f, baseY - h * 0.22f)
+            lineTo(w * 0.92f, baseY)
+            close()
+        }
+        drawPath(galleryPath, color = baseColor)
+
+        // 1. Far Left Tower
+        drawPrasatTower(cx - w * 0.34f, w * 0.14f, h * 0.45f, silhouetteColor.copy(alpha = silhouetteColor.alpha * 0.75f))
+
+        // 2. Far Right Tower
+        drawPrasatTower(cx + w * 0.34f, w * 0.14f, h * 0.45f, silhouetteColor.copy(alpha = silhouetteColor.alpha * 0.75f))
+
+        // 3. Middle Left Tower
+        drawPrasatTower(cx - w * 0.18f, w * 0.18f, h * 0.65f, silhouetteColor.copy(alpha = silhouetteColor.alpha * 0.9f))
+
+        // 4. Middle Right Tower
+        drawPrasatTower(cx + w * 0.18f, w * 0.18f, h * 0.65f, silhouetteColor.copy(alpha = silhouetteColor.alpha * 0.9f))
+
+        // 5. Central Grand Prasat Sanctuary (Tallest)
+        drawPrasatTower(cx, w * 0.24f, h * 0.88f, silhouetteColor)
+    }
+}
+

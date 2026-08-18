@@ -27,6 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -62,6 +64,317 @@ fun HanumanAvatar(
         size = size,
         showOuterBorder = true
     )
+}
+
+/**
+ * Image 1: Full-body Standing Hanuman Warrior Mascot holding the golden chess piece aloft in his right hand.
+ * Complete with traditional martial posture, golden Mukuta crown, white fur with gold patterns,
+ * royal red-and-green embroidered Khmer sampot attire, golden jewelry, and elegant arched tail.
+ */
+@Composable
+fun HanumanWarriorStanding(
+    modifier: Modifier = Modifier,
+    size: Dp = 150.dp
+) {
+    Box(
+        modifier = modifier.size(size),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val w = this.size.width
+            val h = this.size.height
+            val cx = w * 0.48f
+
+            val goldMain = Color(0xFFF59E0B)
+            val goldBright = Color(0xFFFDE68A)
+            val goldDark = Color(0xFFB45309)
+            val furWhite = Color(0xFFFFFFFF)
+            val furShadow = Color(0xFFE2E8F0)
+            val greenMask = Color(0xFF15803D)
+            val greenDark = Color(0xFF166534)
+            val redPattern = Color(0xFF991B1B)
+            val outline = Color(0xFF1E293B)
+            val strokeW = w * 0.014f
+            val thinW = w * 0.009f
+
+            // 1. Elegantly Curled Monkey Tail with Golden Flame Tip (Behind)
+            val tailPath = Path().apply {
+                moveTo(cx + w * 0.12f, h * 0.55f)
+                cubicTo(
+                    cx + w * 0.38f, h * 0.56f,
+                    cx + w * 0.42f, h * 0.36f,
+                    cx + w * 0.30f, h * 0.28f
+                )
+                cubicTo(
+                    cx + w * 0.22f, h * 0.22f,
+                    cx + w * 0.32f, h * 0.18f,
+                    cx + w * 0.34f, h * 0.24f
+                )
+                cubicTo(
+                    cx + w * 0.38f, h * 0.34f,
+                    cx + w * 0.30f, h * 0.48f,
+                    cx + w * 0.14f, h * 0.58f
+                )
+                close()
+            }
+            drawPath(tailPath, furWhite)
+            drawPath(tailPath, outline, style = Stroke(strokeW, join = StrokeJoin.Round))
+
+            // Golden Flame Tail Tip
+            val flamePath = Path().apply {
+                moveTo(cx + w * 0.28f, h * 0.26f)
+                cubicTo(cx + w * 0.34f, h * 0.20f, cx + w * 0.38f, h * 0.22f, cx + w * 0.33f, h * 0.28f)
+                cubicTo(cx + w * 0.36f, h * 0.32f, cx + w * 0.30f, h * 0.36f, cx + w * 0.28f, h * 0.26f)
+                close()
+            }
+            drawPath(flamePath, goldMain)
+            drawPath(flamePath, outline, style = Stroke(thinW))
+
+            // 2. Legs & Feet in Wide Martial Reamker Stance
+            // Left Leg (Viewer's Left)
+            val leftLeg = Path().apply {
+                moveTo(cx - w * 0.22f, h * 0.58f)
+                lineTo(cx - w * 0.32f, h * 0.70f)
+                lineTo(cx - w * 0.24f, h * 0.82f)
+                lineTo(cx - w * 0.14f, h * 0.68f)
+                close()
+            }
+            drawPath(leftLeg, greenDark)
+            drawPath(leftLeg, outline, style = Stroke(strokeW))
+
+            // Left Leg Gold Calf Wrap & Ankle Bangle
+            drawRoundRect(
+                color = goldMain,
+                topLeft = Offset(cx - w * 0.28f, h * 0.78f),
+                size = Size(w * 0.12f, h * 0.05f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f)
+            )
+            drawRoundRect(
+                color = outline,
+                topLeft = Offset(cx - w * 0.28f, h * 0.78f),
+                size = Size(w * 0.12f, h * 0.05f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f),
+                style = Stroke(thinW)
+            )
+
+            // Left Foot (Spread Toes)
+            val leftFoot = Path().apply {
+                moveTo(cx - w * 0.32f, h * 0.88f)
+                cubicTo(cx - w * 0.36f, h * 0.90f, cx - w * 0.34f, h * 0.93f, cx - w * 0.20f, h * 0.93f)
+                cubicTo(cx - w * 0.16f, h * 0.93f, cx - w * 0.18f, h * 0.86f, cx - w * 0.24f, h * 0.84f)
+                close()
+            }
+            drawPath(leftFoot, furWhite)
+            drawPath(leftFoot, outline, style = Stroke(strokeW))
+
+            // Right Leg (Viewer's Right)
+            val rightLeg = Path().apply {
+                moveTo(cx + w * 0.12f, h * 0.58f)
+                lineTo(cx + w * 0.24f, h * 0.70f)
+                lineTo(cx + w * 0.20f, h * 0.82f)
+                lineTo(cx + w * 0.06f, h * 0.68f)
+                close()
+            }
+            drawPath(rightLeg, greenDark)
+            drawPath(rightLeg, outline, style = Stroke(strokeW))
+
+            // Right Leg Gold Calf Wrap & Ankle Bangle
+            drawRoundRect(
+                color = goldMain,
+                topLeft = Offset(cx + w * 0.14f, h * 0.78f),
+                size = Size(w * 0.12f, h * 0.05f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f)
+            )
+            drawRoundRect(
+                color = outline,
+                topLeft = Offset(cx + w * 0.14f, h * 0.78f),
+                size = Size(w * 0.12f, h * 0.05f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f),
+                style = Stroke(thinW)
+            )
+
+            // Right Foot
+            val rightFoot = Path().apply {
+                moveTo(cx + w * 0.18f, h * 0.84f)
+                cubicTo(cx + w * 0.16f, h * 0.92f, cx + w * 0.22f, h * 0.93f, cx + w * 0.32f, h * 0.93f)
+                cubicTo(cx + w * 0.36f, h * 0.91f, cx + w * 0.32f, h * 0.86f, cx + w * 0.24f, h * 0.84f)
+                close()
+            }
+            drawPath(rightFoot, furWhite)
+            drawPath(rightFoot, outline, style = Stroke(strokeW))
+
+            // 3. Royal Khmer Sampot Center Apron (Red & RoyalGold)
+            val sampotCenter = Path().apply {
+                moveTo(cx - w * 0.14f, h * 0.50f)
+                lineTo(cx + w * 0.14f, h * 0.50f)
+                lineTo(cx + w * 0.12f, h * 0.68f)
+                lineTo(cx, h * 0.76f)
+                lineTo(cx - w * 0.12f, h * 0.68f)
+                close()
+            }
+            drawPath(sampotCenter, redPattern)
+            drawPath(sampotCenter, outline, style = Stroke(strokeW))
+
+            // Gold floral pattern on red sampot
+            drawCircle(color = goldBright, radius = w * 0.025f, center = Offset(cx, h * 0.60f))
+            drawCircle(color = goldBright, radius = w * 0.018f, center = Offset(cx, h * 0.68f))
+
+            // Golden Waist Belt & Center Gem
+            drawRoundRect(
+                color = goldMain,
+                topLeft = Offset(cx - w * 0.18f, h * 0.46f),
+                size = Size(w * 0.36f, h * 0.06f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f)
+            )
+            drawCircle(color = goldDark, radius = w * 0.035f, center = Offset(cx, h * 0.49f))
+            drawCircle(color = Color(0xFFDC2626), radius = w * 0.020f, center = Offset(cx, h * 0.49f))
+
+            // 4. White Torso with Royal Gold Chest Sashes (Sangvar)
+            val torsoPath = Path().apply {
+                moveTo(cx - w * 0.18f, h * 0.28f)
+                lineTo(cx + w * 0.18f, h * 0.28f)
+                lineTo(cx + w * 0.16f, h * 0.48f)
+                lineTo(cx - w * 0.16f, h * 0.48f)
+                close()
+            }
+            drawPath(torsoPath, furWhite)
+            drawPath(torsoPath, outline, style = Stroke(strokeW))
+
+            // Crossed Golden Sashes with Rubies
+            val sashLeft = Path().apply {
+                moveTo(cx - w * 0.16f, h * 0.28f)
+                lineTo(cx + w * 0.14f, h * 0.48f)
+                lineTo(cx + w * 0.08f, h * 0.48f)
+                lineTo(cx - w * 0.18f, h * 0.32f)
+                close()
+            }
+            drawPath(sashLeft, goldMain)
+            drawPath(sashLeft, outline, style = Stroke(thinW))
+
+            val sashRight = Path().apply {
+                moveTo(cx + w * 0.16f, h * 0.28f)
+                lineTo(cx - w * 0.14f, h * 0.48f)
+                lineTo(cx - w * 0.08f, h * 0.48f)
+                lineTo(cx + w * 0.18f, h * 0.32f)
+                close()
+            }
+            drawPath(sashRight, goldMain)
+            drawPath(sashRight, outline, style = Stroke(thinW))
+
+            // Chest Center Medallion
+            drawCircle(color = goldBright, radius = w * 0.035f, center = Offset(cx, h * 0.36f))
+            drawCircle(color = Color(0xFFDC2626), radius = w * 0.018f, center = Offset(cx, h * 0.36f))
+
+            // 5. Left Arm (Viewer's Left - Resting with Martial Fist)
+            val leftArm = Path().apply {
+                moveTo(cx - w * 0.16f, h * 0.28f)
+                cubicTo(cx - w * 0.32f, h * 0.28f, cx - w * 0.38f, h * 0.42f, cx - w * 0.22f, h * 0.50f)
+                lineTo(cx - w * 0.18f, h * 0.45f)
+                cubicTo(cx - w * 0.28f, h * 0.40f, cx - w * 0.26f, h * 0.32f, cx - w * 0.16f, h * 0.32f)
+                close()
+            }
+            drawPath(leftArm, furWhite)
+            drawPath(leftArm, outline, style = Stroke(strokeW))
+
+            // Left Gold Armband & Wrist Bangles
+            drawRoundRect(
+                color = goldMain,
+                topLeft = Offset(cx - w * 0.34f, h * 0.30f),
+                size = Size(w * 0.08f, h * 0.04f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(3f, 3f)
+            )
+
+            // Left Hand Fist
+            drawCircle(color = furWhite, radius = w * 0.045f, center = Offset(cx - w * 0.22f, h * 0.49f))
+            drawCircle(color = outline, radius = w * 0.045f, center = Offset(cx - w * 0.22f, h * 0.49f), style = Stroke(strokeW))
+
+            // 6. Right Arm (Viewer's Right - Raised High Holding Chess Piece)
+            val rightArm = Path().apply {
+                moveTo(cx + w * 0.16f, h * 0.28f)
+                cubicTo(cx + w * 0.32f, h * 0.30f, cx + w * 0.36f, h * 0.44f, cx + w * 0.24f, h * 0.52f)
+                lineTo(cx + w * 0.20f, h * 0.46f)
+                cubicTo(cx + w * 0.28f, h * 0.42f, cx + w * 0.26f, h * 0.32f, cx + w * 0.16f, h * 0.32f)
+                close()
+            }
+            drawPath(rightArm, furWhite)
+            drawPath(rightArm, outline, style = Stroke(strokeW))
+
+            // Right Raised Forearm holding Piece Aloft
+            val rightForearm = Path().apply {
+                moveTo(cx - w * 0.28f, h * 0.26f)
+                cubicTo(cx - w * 0.36f, h * 0.22f, cx - w * 0.38f, h * 0.14f, cx - w * 0.30f, h * 0.12f)
+                lineTo(cx - w * 0.24f, h * 0.16f)
+                close()
+            }
+            drawPath(rightForearm, furWhite)
+
+            // Right Hand Fingers Pinching Golden Chess Piece (Conch)
+            drawCircle(color = furWhite, radius = w * 0.04f, center = Offset(cx - w * 0.28f, h * 0.15f))
+            drawCircle(color = outline, radius = w * 0.04f, center = Offset(cx - w * 0.28f, h * 0.15f), style = Stroke(strokeW))
+
+            // Golden Conch Tiered Chess Piece Held High
+            val piecePath = Path().apply {
+                moveTo(cx - w * 0.28f, h * 0.05f)
+                cubicTo(cx - w * 0.25f, h * 0.08f, cx - w * 0.25f, h * 0.11f, cx - w * 0.28f, h * 0.14f)
+                cubicTo(cx - w * 0.31f, h * 0.11f, cx - w * 0.31f, h * 0.08f, cx - w * 0.28f, h * 0.05f)
+                close()
+            }
+            drawPath(piecePath, goldBright)
+            drawPath(piecePath, outline, style = Stroke(thinW))
+
+            // 3 Energy Glow Rays Above Piece (Image 1 Signature)
+            val rayCenter = Offset(cx - w * 0.28f, h * 0.02f)
+            val rayLeft = Offset(cx - w * 0.34f, h * 0.04f)
+            val rayRight = Offset(cx - w * 0.22f, h * 0.04f)
+            drawLine(goldMain, Offset(cx - w * 0.28f, h * 0.04f), rayCenter, strokeWidth = w * 0.025f, cap = StrokeCap.Round)
+            drawLine(goldMain, Offset(cx - w * 0.31f, h * 0.06f), rayLeft, strokeWidth = w * 0.025f, cap = StrokeCap.Round)
+            drawLine(goldMain, Offset(cx - w * 0.25f, h * 0.06f), rayRight, strokeWidth = w * 0.025f, cap = StrokeCap.Round)
+
+            // 7. Hanuman Head with Green Mask, Roaring Smile & Mukuta Crown
+            // Head Shape
+            drawCircle(color = furWhite, radius = w * 0.15f, center = Offset(cx, h * 0.18f))
+            drawCircle(color = outline, radius = w * 0.15f, center = Offset(cx, h * 0.18f), style = Stroke(strokeW))
+
+            // Green Reamker Eye Mask
+            val maskPath = Path().apply {
+                moveTo(cx - w * 0.12f, h * 0.15f)
+                cubicTo(cx - w * 0.06f, h * 0.10f, cx + w * 0.06f, h * 0.10f, cx + w * 0.12f, h * 0.15f)
+                cubicTo(cx + w * 0.10f, h * 0.22f, cx - w * 0.10f, h * 0.22f, cx - w * 0.12f, h * 0.15f)
+                close()
+            }
+            drawPath(maskPath, greenMask)
+            drawPath(maskPath, outline, style = Stroke(thinW))
+
+            // Big Almond Eyes with Dark Pupils
+            drawOval(color = Color.White, topLeft = Offset(cx - w * 0.09f, h * 0.13f), size = Size(w * 0.06f, h * 0.05f))
+            drawCircle(color = outline, radius = w * 0.018f, center = Offset(cx - w * 0.06f, h * 0.15f))
+            drawOval(color = Color.White, topLeft = Offset(cx + w * 0.03f, h * 0.13f), size = Size(w * 0.06f, h * 0.05f))
+            drawCircle(color = outline, radius = w * 0.018f, center = Offset(cx + w * 0.06f, h * 0.15f))
+
+            // Open Roaring Smile with Teeth & Fangs
+            val mouthPath = Path().apply {
+                moveTo(cx - w * 0.08f, h * 0.19f)
+                cubicTo(cx, h * 0.26f, cx + w * 0.08f, h * 0.19f, cx + w * 0.08f, h * 0.19f)
+                cubicTo(cx, h * 0.22f, cx - w * 0.08f, h * 0.19f, cx - w * 0.08f, h * 0.19f)
+                close()
+            }
+            drawPath(mouthPath, Color(0xFF7F1D1D))
+            drawPath(mouthPath, outline, style = Stroke(thinW))
+
+            // Golden Mukuta Spire Crown
+            val crownPath = Path().apply {
+                moveTo(cx - w * 0.14f, h * 0.12f)
+                lineTo(cx - w * 0.08f, h * 0.05f)
+                lineTo(cx, h * 0.02f)
+                lineTo(cx + w * 0.08f, h * 0.05f)
+                lineTo(cx + w * 0.14f, h * 0.12f)
+                close()
+            }
+            drawPath(crownPath, goldMain)
+            drawPath(crownPath, outline, style = Stroke(thinW))
+            drawCircle(color = Color(0xFFDC2626), radius = w * 0.018f, center = Offset(cx, h * 0.07f))
+        }
+    }
 }
 
 /**

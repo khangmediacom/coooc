@@ -1,5 +1,13 @@
 package com.example
 
+import coil.imageLoader
+import coil.request.ImageRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.CircularProgressIndicator
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,23 +24,46 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.SportsEsports
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.Spring
+import androidx.compose.ui.graphics.graphicsLayer
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -43,16 +74,29 @@ import com.example.data.model.AIDifficulty
 import com.example.data.model.AppLanguage
 import com.example.data.model.PieceColor
 import com.example.ui.components.GoogleSignInDialog
+import com.example.ui.components.AppShellTopBar
+
 import com.example.ui.localization.AppStrings
 import com.example.ui.screens.CustomizationScreen
+import com.example.ui.screens.HistoryScreen
 import com.example.ui.screens.GameScreen
 import com.example.ui.screens.HomeScreen
+import com.example.ui.screens.PlayScreen
+import com.example.ui.screens.OnlineScreen
+import com.example.ui.screens.TacticsScreen
 import com.example.ui.screens.LeaderboardScreen
-import com.example.ui.screens.MatchHistoryScreen
+import com.example.ui.screens.CustomizationScreen
+import com.example.ui.screens.HistoryScreen
+import com.example.ui.screens.LeaderboardScreen
+import com.example.ui.screens.CustomizationScreen
+import com.example.ui.screens.HistoryScreen
 import com.example.ui.screens.OnlineLobbyScreen
 import com.example.ui.screens.ReplayViewerScreen
-import com.example.ui.screens.TacticsPlayScreen
 import com.example.ui.screens.TacticsScreen
+import com.example.ui.screens.LeaderboardScreen
+import com.example.ui.screens.CustomizationScreen
+import com.example.ui.screens.HistoryScreen
+import com.example.ui.screens.WelcomeScreen
 import com.example.ui.theme.AngkorGold
 import com.example.ui.theme.KhmerChessTheme
 import com.example.viewmodel.CurrentScreen
@@ -64,30 +108,59 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // enableEdgeToEdge()
         setContent {
             val preferences by viewModel.preferences.collectAsState()
             val currentScreen by viewModel.currentScreen.collectAsState()
             val showSignInDialog by viewModel.showSignInDialog.collectAsState()
 
-            val showBottomBar = currentScreen !is CurrentScreen.Game && currentScreen !is CurrentScreen.TacticsPlay && currentScreen !is CurrentScreen.Replay
+            val showBottomBar = currentScreen !is CurrentScreen.Game && 
+                 
+                currentScreen !is CurrentScreen.Replay && 
+                currentScreen !is CurrentScreen.Welcome
 
             KhmerChessTheme(darkTheme = preferences.isDarkMode) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    containerColor = Color(0xFFFDFBF7),
+                    contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
+                    
+                    topBar = {
+                        if (showBottomBar) {
+                            val titleKey = when (currentScreen) {
+                                is CurrentScreen.Home -> "home"
+                                is CurrentScreen.Play -> "play"
+                                is CurrentScreen.OnlineLobby -> "online_match"
+                                is CurrentScreen.Tactics -> "learn"
+                                is CurrentScreen.Leaderboard -> "ranks"
+                                is CurrentScreen.Customization -> "settings"
+                                is CurrentScreen.History -> "history_replays"
+                                else -> "app_title"
+                            }
+                            AppShellTopBar(
+                                title = AppStrings.get(preferences.language, titleKey),
+                                subtitle = AppStrings.get(preferences.language, "app_subtitle"),
+                                onlineCountText = AppStrings.get(preferences.language, "online_count")
+                            )
+                        }
+                    },
                     bottomBar = {
                         if (showBottomBar) {
                             ElegantBottomBar(
                                 currentScreen = currentScreen,
                                 language = preferences.language,
-                                onNavigate = { target -> viewModel.navigateTo(target) }
+                                onNavigate = { target -> viewModel.navigateTo(target) },
+                                modifier = Modifier.navigationBarsPadding()
                             )
                         }
                     }
                 ) { innerPadding ->
                     MainContent(
                         viewModel = viewModel,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .statusBarsPadding()
                     )
                 }
 
@@ -112,20 +185,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        val prefs = viewModel.preferences.value
-        if (prefs.musicEnabled) {
-            com.example.engine.AudioHaptics.startBgm()
-        }
+        // AudioHaptics disabled to prevent startup freeze
     }
 
     override fun onStop() {
         super.onStop()
-        com.example.engine.AudioHaptics.stopBgm()
+        // AudioHaptics disabled
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        com.example.engine.AudioHaptics.stopBgm()
+        // AudioHaptics disabled
     }
 }
 
@@ -136,76 +206,112 @@ fun ElegantBottomBar(
     onNavigate: (CurrentScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFF0F172A).copy(alpha = 0.95f))
-            .border(width = 1.dp, color = Color(0xFF334155).copy(alpha = 0.6f))
-            .padding(horizontal = 8.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
+            .background(Color(0xFFF9F1E2)),
+        contentAlignment = Alignment.Center
     ) {
-        BottomNavItem(
-            label = AppStrings.get(language, "nav_home"),
-            icon = Icons.Default.Home,
-            selected = currentScreen is CurrentScreen.Home,
-            onClick = { onNavigate(CurrentScreen.Home) },
-            tag = "nav_home"
-        )
-        BottomNavItem(
-            label = AppStrings.get(language, "nav_play"),
-            icon = Icons.Default.SportsEsports,
-            selected = currentScreen is CurrentScreen.OnlineLobby,
-            onClick = { onNavigate(CurrentScreen.OnlineLobby) },
-            tag = "nav_play"
-        )
-        BottomNavItem(
-            label = AppStrings.get(language, "nav_learn"),
-            icon = Icons.Default.MenuBook,
-            selected = currentScreen is CurrentScreen.Tactics,
-            onClick = { onNavigate(CurrentScreen.Tactics) },
-            tag = "nav_learn"
-        )
-        BottomNavItem(
-            label = AppStrings.get(language, "nav_profile"),
-            icon = Icons.Default.Person,
-            selected = currentScreen is CurrentScreen.Customization || currentScreen is CurrentScreen.Leaderboard,
-            onClick = { onNavigate(CurrentScreen.Customization) },
-            tag = "nav_profile"
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BottomNavItem(
+                label = AppStrings.get(language, "home"),
+                selectedIcon = Icons.Filled.Home,
+                unselectedIcon = Icons.Outlined.Home,
+                selected = currentScreen is CurrentScreen.Home,
+                onClick = { onNavigate(CurrentScreen.Home) },
+                tag = "nav_home"
+            )
+            BottomNavItem(
+                label = AppStrings.get(language, "play"),
+                selectedIcon = Icons.Filled.SportsEsports,
+                unselectedIcon = Icons.Outlined.SportsEsports,                
+                selected = currentScreen is CurrentScreen.Play,
+                onClick = { onNavigate(CurrentScreen.Play) },
+                tag = "nav_play"
+            )
+            BottomNavItem(
+                label = AppStrings.get(language, "learn"),
+                selectedIcon = Icons.Filled.MenuBook,
+                unselectedIcon = Icons.Outlined.MenuBook,
+                selected = currentScreen is CurrentScreen.Tactics,
+                onClick = { onNavigate(CurrentScreen.Tactics) },
+                tag = "nav_learn"
+            )
+            BottomNavItem(
+                label = AppStrings.get(language, "ranks"),
+                selectedIcon = Icons.Filled.EmojiEvents,
+                unselectedIcon = Icons.Outlined.EmojiEvents,
+                selected = currentScreen is CurrentScreen.Leaderboard,
+                onClick = { onNavigate(CurrentScreen.Leaderboard) },
+                tag = "nav_ranks"
+            )
+            BottomNavItem(
+                label = AppStrings.get(language, "settings"),
+                selectedIcon = Icons.Filled.Settings,
+                unselectedIcon = Icons.Outlined.Settings,
+                selected = currentScreen is CurrentScreen.Customization,
+                onClick = { onNavigate(CurrentScreen.Customization) },
+                tag = "nav_settings"
+            )
+        }
     }
 }
 
 @Composable
 fun BottomNavItem(
     label: String,
-    icon: ImageVector,
+    selectedIcon: ImageVector,
+    unselectedIcon: ImageVector,
     selected: Boolean,
     onClick: () -> Unit,
     tag: String
 ) {
+    val navModifier = if (selected) {
+        Modifier
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color(0xFFEEDDBC))
+    } else {
+        Modifier.clip(RoundedCornerShape(24.dp))
+    }
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
+        modifier = navModifier
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .padding(horizontal = 20.dp, vertical = 8.dp)
             .testTag(tag)
     ) {
         Icon(
-            imageVector = icon,
+            imageVector = if (selected) selectedIcon else unselectedIcon,
             contentDescription = label,
-            tint = if (selected) Color(0xFFE5A83B) else Color(0xFF94A3B8),
-            modifier = Modifier.size(22.dp)
+            tint = if (selected) Color(0xFF8B5E34) else Color(0xFF78716C),
+            modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
             fontSize = 11.sp,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-            color = if (selected) Color(0xFFE5A83B) else Color(0xFF94A3B8)
+            color = if (selected) Color(0xFF8B5E34) else Color(0xFF78716C)
         )
+        if (selected) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .width(20.dp)
+                    .height(2.dp)
+                    .background(Color(0xFF8B5E34))
+            )
+        } else {
+            Spacer(modifier = Modifier.height(6.dp))
+        }
     }
 }
 
@@ -231,6 +337,59 @@ fun MainContent(
     val replayIndex by viewModel.replayCurrentIndex.collectAsState()
 
     when (val screen = currentScreen) {
+        is CurrentScreen.Loading -> {
+            val context = androidx.compose.ui.platform.LocalContext.current
+            LaunchedEffect(Unit) {
+                viewModel.navigateTo(CurrentScreen.Welcome)
+            }
+            Box(
+                modifier = modifier.fillMaxSize().background(Color(0xFFF9F7F1)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator(color = Color(0xFFD4AF37))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Loading Assets...", color = Color(0xFF867E75))
+                }
+            }
+        }
+        is CurrentScreen.Welcome -> {
+            WelcomeScreen(
+                currentLanguage = preferences.language,
+                onSelectLanguage = { lang -> viewModel.updateLanguage(lang) },
+                onEnter = { viewModel.navigateTo(CurrentScreen.Home) },
+                modifier = modifier
+            )
+        }
+
+        is CurrentScreen.Play -> {
+            PlayScreen(
+                language = preferences.language,
+                onStartAi = { diff, color -> viewModel.startAiGame(diff, color) },
+                onStartLocal2P = { viewModel.startLocal2PGame() },
+                modifier = modifier
+            )
+        }
+
+        is CurrentScreen.OnlineLobby -> {
+            OnlineScreen(
+                language = preferences.language,
+                onFindMatch = { viewModel.startOnlineQuickMatch() },
+                modifier = modifier
+            )
+        }
+
+        is CurrentScreen.Tactics -> {
+            TacticsScreen(
+                language = preferences.language,
+                onStartLesson = { lessonId -> 
+                    val lesson = com.example.data.model.TacticsData.lessons.find { it.id == lessonId }
+                    if (lesson != null) viewModel.startTacticsLesson(lesson)
+                },
+                modifier = modifier
+            )
+        }
+
         is CurrentScreen.Home -> {
             HomeScreen(
                 userProfile = userProfile,
@@ -298,43 +457,15 @@ fun MainContent(
             )
         }
 
-        is CurrentScreen.Tactics -> {
-            TacticsScreen(
-                progressList = lessonProgressList,
-                language = preferences.language,
-                onSelectLesson = { lesson -> viewModel.startTacticsLesson(lesson) },
-                onBack = { viewModel.navigateTo(CurrentScreen.Home) },
-                modifier = modifier
-            )
-        }
-
-        is CurrentScreen.TacticsPlay -> {
-            val isDone = lessonProgressList.any { it.lessonId == screen.lesson.id && it.completed }
-            TacticsPlayScreen(
-                lesson = screen.lesson,
-                boardState = boardState,
-                selectedPos = selectedPos,
-                legalMoves = legalMoves,
-                preferences = preferences,
-                isCompleted = isDone,
-                onSquareClick = { pos -> viewModel.onSquareSelected(pos) },
-                onHint = { viewModel.requestHint() },
-                onNextLesson = { viewModel.navigateTo(CurrentScreen.Tactics) },
-                onBack = { viewModel.navigateTo(CurrentScreen.Tactics) },
-                modifier = modifier
-            )
-        }
-
+        is CurrentScreen.TacticsPlay -> {}
         is CurrentScreen.History -> {
-            MatchHistoryScreen(
+            HistoryScreen(
                 matches = matchHistoryList,
                 language = preferences.language,
-                onSelectMatch = { match -> viewModel.loadMatchForReplay(match) },
-                onBack = { viewModel.navigateTo(CurrentScreen.Home) },
+                onReplayMatch = { match -> viewModel.loadMatchForReplay(match) },
                 modifier = modifier
             )
         }
-
         is CurrentScreen.Replay -> {
             ReplayViewerScreen(
                 match = screen.match,
@@ -350,31 +481,15 @@ fun MainContent(
 
         is CurrentScreen.Leaderboard -> {
             LeaderboardScreen(
-                entries = viewModel.getLeaderboard(),
                 language = preferences.language,
-                isLoggedIn = userProfile.isLoggedIn,
-                onPromptSignIn = { viewModel.openSignInDialog() },
-                onBack = { viewModel.navigateTo(CurrentScreen.Home) },
                 modifier = modifier
             )
         }
-
-        is CurrentScreen.Customization -> {
+is CurrentScreen.Customization -> {
             CustomizationScreen(
                 preferences = preferences,
-                userProfile = userProfile,
-                onSelectTheme = { theme -> viewModel.updateBoardTheme(theme) },
-                onSelectPieceStyle = { style -> viewModel.updatePieceStyle(style) },
-                onSelectLanguage = { lang -> viewModel.updateLanguage(lang) },
-                onToggleDarkMode = { enabled -> viewModel.toggleDarkMode(enabled) },
+                onLanguageChange = { lang -> viewModel.updateLanguage(lang) },
                 onToggleSound = { enabled -> viewModel.toggleSound(enabled) },
-                onUpdateSoundVolume = { vol -> viewModel.updateSoundVolume(vol) },
-                onToggleMusic = { enabled -> viewModel.toggleMusic(enabled) },
-                onUpdateMusicVolume = { vol -> viewModel.updateMusicVolume(vol) },
-                onTestSound = { type -> viewModel.testSoundEffect(type) },
-                onUpdateUsername = { name -> viewModel.updateUsername(name) },
-                onPromptSignIn = { viewModel.openSignInDialog() },
-                onSignOut = { viewModel.signOut() },
                 onBack = { viewModel.navigateTo(CurrentScreen.Home) },
                 modifier = modifier
             )

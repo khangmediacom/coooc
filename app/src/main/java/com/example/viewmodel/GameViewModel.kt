@@ -37,6 +37,8 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 sealed class CurrentScreen {
+    data object Loading : CurrentScreen()
+    data object Welcome : CurrentScreen()
     data object Home : CurrentScreen()
     data class Game(val mode: GameMode, val difficulty: AIDifficulty = AIDifficulty.AMATEUR, val playerColor: PieceColor = PieceColor.WHITE) : CurrentScreen()
     data object Tactics : CurrentScreen()
@@ -45,6 +47,7 @@ sealed class CurrentScreen {
     data class Replay(val match: MatchHistoryEntity) : CurrentScreen()
     data object Leaderboard : CurrentScreen()
     data object Customization : CurrentScreen()
+    data object Play : CurrentScreen()
     data object OnlineLobby : CurrentScreen()
 }
 
@@ -61,7 +64,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     val lessonProgressList: StateFlow<List<LessonProgressEntity>> = repository.lessonProgress
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _currentScreen = MutableStateFlow<CurrentScreen>(CurrentScreen.Home)
+    private val _currentScreen = MutableStateFlow<CurrentScreen>(CurrentScreen.Loading)
     val currentScreen: StateFlow<CurrentScreen> = _currentScreen.asStateFlow()
 
     private val _boardState = MutableStateFlow(KhmerChessRules.createInitialBoard())
@@ -591,6 +594,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         } else {
             AudioHaptics.stopBgm()
         }
+        viewModelScope.launch { repository.updatePreferences(_preferences.value) }
+    }
+
+    
+    fun updateMusicTrack(track: com.example.data.model.MusicTrack) {
+        _preferences.value = _preferences.value.copy(musicTrack = track)
         viewModelScope.launch { repository.updatePreferences(_preferences.value) }
     }
 

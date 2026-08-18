@@ -30,9 +30,9 @@ enum class BoardTheme(
         "Classic Wood",
         "ក្តារឈើបុរាណ",
         "Bois Classique",
-        0xFFF0D9B5,
-        0xFFB58863,
-        0xFF8A6546,
+        0xFFEFE1CE,
+        0xFFBA8C59,
+        0xFFD4AF37,
         "Clean traditional wooden tournament board"
     ),
     DARK(
@@ -116,6 +116,21 @@ enum class PieceStyle(
     }
 }
 
+
+enum class MusicTrack(val id: String, val titleVi: String, val titleEn: String, val titleKm: String) {
+    TRADITIONAL_1("trad_1", "Nhạc Ngũ Âm (Pinpeat)", "Pinpeat Ensemble", "ភ្លេងពិណពាទ្យ"),
+    TRADITIONAL_2("trad_2", "Mohaori (Hoàng Gia)", "Mohaori Royal", "ភ្លេងមហោរី"),
+    TRADITIONAL_3("trad_3", "Saravan (Dân ca)", "Saravan Folk", "សារ៉ាវ៉ាន់"),
+    TRADITIONAL_4("trad_4", "Chapei Dang Veng", "Chapei Lute", "ចាប៉ីដងវែង"),
+    TRADITIONAL_5("trad_5", "Khmer Lullaby", "Khmer Lullaby", "បំពេរកូន");
+
+    companion object {
+        fun fromId(id: String): MusicTrack {
+            return entries.find { it.id.equals(id, ignoreCase = true) } ?: TRADITIONAL_1
+        }
+    }
+}
+
 data class UserPreferences(
     val boardTheme: BoardTheme = BoardTheme.CLASSIC,
     val pieceStyle: PieceStyle = PieceStyle.CLASSIC,
@@ -128,5 +143,6 @@ data class UserPreferences(
     val showLegalMoves: Boolean = true,
     val showCoordinates: Boolean = true,
     val isDarkMode: Boolean = false,
-    val autoPromote: Boolean = true
+    val autoPromote: Boolean = true,
+    val musicTrack: MusicTrack = MusicTrack.TRADITIONAL_1
 )

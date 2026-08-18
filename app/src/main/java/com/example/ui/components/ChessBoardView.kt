@@ -12,6 +12,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
@@ -44,12 +46,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.example.R
 import com.example.data.model.BoardState
 import com.example.data.model.BoardTheme
 import com.example.data.model.Move
@@ -83,15 +88,7 @@ fun ChessBoardView(
 
     // Breathing pulse for legal moves & check
     val infiniteTransition = rememberInfiniteTransition(label = "board_motion")
-    val pulseScale by infiniteTransition.animateFloat(
-        initialValue = 0.85f,
-        targetValue = 1.15f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse_scale"
-    )
+    val pulseScale = 1f
 
     val checkGlowAlpha by infiniteTransition.animateColor(
         initialValue = Color(0x33EF4444),
@@ -117,21 +114,37 @@ fun ChessBoardView(
         list
     }
 
+    val goldBorderBrush = remember {
+        Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFF3D98A),
+                Color(0xFFD4AF37),
+                Color(0xFF996515),
+                Color(0xFFE8CA72),
+                Color(0xFFB37E1C),
+                Color(0xFFF3D98A)
+            )
+        )
+    }
+
     BoxWithConstraints(
         modifier = modifier
             .aspectRatio(1f)
-            .shadow(16.dp, RoundedCornerShape(12.dp), spotColor = Color(0x66000000))
-            .clip(RoundedCornerShape(12.dp))
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        borderColor,
-                        borderColor.copy(alpha = 0.9f)
-                    )
-                )
+            .shadow(
+                elevation = 14.dp,
+                shape = RoundedCornerShape(26.dp),
+                spotColor = Color(0x4092400E),
+                ambientColor = Color(0x22000000)
             )
-            .border(1.5.dp, AngkorGold.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
-            .padding(3.dp)
+            .clip(RoundedCornerShape(26.dp))
+            .background(Color(0xFFBA8C59))
+            .border(
+                width = 5.dp,
+                brush = goldBorderBrush,
+                shape = RoundedCornerShape(26.dp)
+            )
+            .padding(5.dp)
+            .clip(RoundedCornerShape(21.dp))
             .testTag("chess_board")
     ) {
         val squareSize = minOf(maxWidth, maxHeight) / 8
@@ -140,7 +153,7 @@ fun ChessBoardView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(21.dp))
         ) {
             for (displayRow in 0..7) {
                 val actualRow = if (isFlipped) 7 - displayRow else displayRow
@@ -200,7 +213,7 @@ fun ChessBoardView(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(checkGlowAlpha)
+                                        .drawBehind { drawRect(checkGlowAlpha) }
                                 )
                             }
 
@@ -285,7 +298,7 @@ fun ChessBoardView(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(21.dp))
         ) {
             for (pieceItem in activePieces) {
                 key(pieceItem.piece.id) {
